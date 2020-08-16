@@ -18,6 +18,7 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import java.util.Objects;
 import java.util.Timer;
 
 import unipg.pigdm.droidshooter.R;
@@ -54,10 +55,10 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     private static float yPosition, yAcceleration, yVelocity = 0.0f;
     private static float xMax, yMax;
 
-    private static final float xVelMax = 0.2f;
-    private static final float yVelMax = -3;
+    private static final float XVELMAX = 0.2f;
+    private static final float YVELMAX = -3;
 
-    private static final float FRAME_TIME =0.02f;
+    private static final float FRAME_TIME =0.006f;
 
     //Sensor manager
     private SensorManager sensorManager = null;
@@ -165,7 +166,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         Log.d("xS: ", String.valueOf(xS));
         Log.d("yS: ", String.valueOf(yS));
 
-        checkMaxXY();
+        //checkMaxXY();
 
         //Add to position negative for x value because sensor reads the opposite of what we want
         xPosition -= xS;
@@ -189,13 +190,13 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     }
 
     private void checkMaxVelocity() {
-        if (xVelocity > xVelMax) {
-            xVelocity = xVelMax;
+        if (xVelocity > XVELMAX) {
+            xVelocity = XVELMAX;
         } else if (xVelocity < 0) {
             xVelocity = 0;
         }
-        if (yVelocity < yVelMax) {
-            yVelocity = yVelMax;
+        if (yVelocity < YVELMAX) {
+            yVelocity = YVELMAX;
         } else if (yVelocity > 0) {
             yVelocity = 0;
         }
@@ -210,7 +211,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     }
 
     public static float getEnemySpeed() {
-        return Float.parseFloat(prefs.getString("enemy_speed", "5"));
+        return Float.parseFloat(Objects.requireNonNull(prefs.getString("enemy_speed", "5")));
     }
 
     @Override
@@ -221,7 +222,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onResume() {
         super.onResume();
-        enemySpeed = getEnemySpeed();
+        //enemySpeed = getEnemySpeed();
         sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_FASTEST);
     }
 
