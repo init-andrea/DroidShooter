@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/white"
+    tools:context=".controller.GameActivity" >
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/scoreLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:layout_gravity="center"
+            android:gravity="start"
+            android:layout_weight="1"
+            android:paddingVertical="14dp"
+            android:text="@string/score_text"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/pause_button_description"
+            android:id="@+id/pauseButton"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="end"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/pause_button" />
+
+    </LinearLayout>
+
+    <unipg.pigdm.droidshooter.view.CustomGameView
+        android:id="@+id/customGameView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal">
+
+    </unipg.pigdm.droidshooter.view.CustomGameView>
+
+
+</LinearLayout>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent" >
+
+    <LinearLayout
+        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/resumeButton"
+            android:layout_gravity="center_horizontal"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:text="@string/resume_text" />
+
+        <Button
+            android:id="@+id/quitButton"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:text="@string/quit_button"
+            />
+
+        <ImageButton
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/audio_button_description"
+            android:id="@+id/audioButton"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center_horizontal"
+            android:onClick="changeAudioState"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/audio_on" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/scoreLabel"
+        android:layout_gravity="top"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="@string/score_text" />
+
+</LinearLayout>
