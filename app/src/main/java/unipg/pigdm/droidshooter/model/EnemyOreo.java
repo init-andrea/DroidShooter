@@ -13,6 +13,7 @@ public class EnemyOreo extends Enemy {
     private int points = 4;
 
     public EnemyOreo(Context context) {
+
         this.setName(name);
         this.setKillTime(killTime);
         this.setImage(BitmapFactory.decodeResource(context.getResources(), R.drawable.android_oreo));

@@ -15,6 +15,7 @@
     <!-- Preference Titles -->
     <string name="game_header">Game</string>
     <string name="audio_header">Audio</string>
+    <string name="score_header">Score</string>
 
     <!-- Enemies Preference -->
     <string name="crosshair_speed_title">Speed of the player\'s crosshair</string>
@@ -29,4 +30,9 @@
     <string name="audio_title">In game audio</string>
     <string name="audio_summary_on">Audio is on</string>
     <string name="audio_summary_off">Audio is off</string>
+
+    <!-- Score Preference -->
+    <string name="score_title">In game score</string>
+    <string name="score_summary_on">Score is on</string>
+    <string name="score_summary_off">Score is off</string>
 </resources>

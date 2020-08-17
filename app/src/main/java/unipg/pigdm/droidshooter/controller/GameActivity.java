@@ -29,8 +29,9 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
 
     private static int score = 0;
     private static float enemySpeed;
+    private static int enemyNumber;
+    private static float gameTimer;
     private TextView scoreText;
-    private static SharedPreferences prefs;
 
     private ImageButton pauseButton;
 
@@ -55,9 +56,6 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     private static float yPosition, yAcceleration, yVelocity = 0.0f;
     private static float xMax, yMax;
 
-    private static final float XVELMAX = 4.0f;
-    private static final float YVELMAX = 4.0f;
-
     private static final float FRAME_TIME =0.006f;
 
     //Sensor manager
@@ -66,19 +64,14 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        getPreferences();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
         scoreText = findViewById(R.id.scoreLabel);
-
-        //explosionImage = findViewById(R.id.explosion);
-        //explosionImage.setBackgroundResource(R.drawable.explosion_animation);
-        //explosionAnimation = (AnimationDrawable) explosionImage.getBackground();
-
-        prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        enemySpeed = getEnemySpeed();
-
         pauseButton = findViewById(R.id.pauseButton);
+
         pauseButton.setOnClickListener(pauseGameListener);
 
         xMax = CustomGameView.getMaxWidth() - (float)EnemyManager.pxFromDp(66);
@@ -120,7 +113,19 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         })*/
     }
 
+    public void getPreferences() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        enemySpeed = (float)checkIfNumber(Float.parseFloat(Objects.requireNonNull(prefs.getString("enemy_speed", String.valueOf(R.string.default_enemies_speed)))), R.string.default_enemies_speed);
+        enemyNumber = (int)checkIfNumber(Integer.parseInt(Objects.requireNonNull(prefs.getString("enemy_number", String.valueOf(R.string.default_enemies_number)))), R.string.default_enemies_number);
+        gameTimer = (float)checkIfNumber(Float.parseFloat(Objects.requireNonNull(prefs.getString("game_timer", String.valueOf(R.string.default_timer_value)))), R.string.default_timer_value);
+    }
 
+    private Number checkIfNumber(Object check, float defaultValue) {
+        if (check instanceof Number)
+            return (Number) check;
+        else
+            return defaultValue;
+    }
 
     public static int getScore() {
         return score;
@@ -141,7 +146,6 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-        //TODO
         if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             xAcceleration = sensorEvent.values[0];
             yAcceleration = sensorEvent.values[1];
@@ -191,7 +195,11 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     }
 
     public static float getEnemySpeed() {
-        return Float.parseFloat(Objects.requireNonNull(prefs.getString("enemy_speed", "5")));
+        return enemySpeed;
+    }
+
+    public static int getEnemyNumber() {
+        return enemyNumber;
     }
 
     @Override
@@ -200,17 +208,16 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        //enemySpeed = getEnemySpeed();
-        sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_FASTEST);
-    }
-
-    @Override
     protected void onPause() {
         // Unregister the sensor listener
         super.onPause();
         sensorManager.unregisterListener(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_FASTEST);
     }
 
 }

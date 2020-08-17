@@ -1,39 +1,50 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory app:title="@string/game_header">
+    <PreferenceCategory android:title="@string/game_header">
 
         <EditTextPreference
-            app:key="crosshair_speed"
-            app:title="@string/crosshair_speed_title"
+            android:key="crosshair_speed"
+            android:title="@string/crosshair_speed_title"
             app:useSimpleSummaryProvider="true" />
 
         <EditTextPreference
-            app:key="enemy_speed"
-            app:title="@string/enemies_speed_title"
+            android:key="enemy_speed"
+            android:title="@string/enemies_speed_title"
             app:useSimpleSummaryProvider="true" />
 
         <EditTextPreference
-            app:key="enemy_number"
-            app:title="@string/enemies_number_title"
+            android:key="enemy_number"
+            android:title="@string/enemies_number_title"
             app:useSimpleSummaryProvider="true" />
 
         <EditTextPreference
-            app:key="game_timer"
-            app:title="@string/timer_title"
-            app:defaultValue="@string/default_timer_value"
+            android:key="game_timer"
+            android:title="@string/timer_title"
+            android:defaultValue="@string/default_timer_value"
             app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/audio_header">
+    <PreferenceCategory android:title="@string/score_header">
 
         <SwitchPreferenceCompat
-            app:key="audio"
-            app:title="@string/audio_title"
-            app:summaryOff="@string/audio_summary_off"
-            app:summaryOn="@string/audio_summary_on" />
+            android:key="score"
+            android:title="@string/score_title"
+            android:summaryOff="@string/score_summary_off"
+            android:summaryOn="@string/score_summary_on"/>
 
     </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/audio_header">
+
+        <SwitchPreferenceCompat
+            android:key="audio"
+            android:title="@string/audio_title"
+            android:summaryOff="@string/audio_summary_off"
+            android:summaryOn="@string/audio_summary_on" />
+
+    </PreferenceCategory>
+
 
 </PreferenceScreen>

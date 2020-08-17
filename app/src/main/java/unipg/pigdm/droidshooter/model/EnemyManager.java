@@ -20,9 +20,9 @@ import unipg.pigdm.droidshooter.view.CustomGameView;
 public class EnemyManager {
 
     private Random generator;
-    private int enemiesCount = 10;
-    private float density, xMax, yMax;
+    private int enemyNumber;
     private float enemySpeed;
+    private float density, xMax, yMax;
 
     private ArrayList<Enemy> enemiesList;
 
@@ -30,9 +30,9 @@ public class EnemyManager {
         enemiesList = new ArrayList<>();
         xMax = CustomGameView.getMaxWidth() - pxFromDp(44);
         yMax = CustomGameView.getMaxHeight() - pxFromDp(44);
-        Log.d("max", "x:" + xMax + "y:" + yMax);
         density = CustomGameView.getDensity();
-        //enemySpeed = GameActivity.getEnemySpeed();
+        enemyNumber = GameActivity.getEnemyNumber();
+        enemySpeed = GameActivity.getEnemySpeed();
         spawnEnemyList(enemiesList, context);
         resizeEnemies(enemiesList, density);
         for (Enemy enemy : enemiesList) {
@@ -101,8 +101,8 @@ public class EnemyManager {
         float deltaX = targetX - currentX;
         float deltaY = targetY - currentY;
         float angle = (float) Math.atan2(deltaY, deltaX);
-        currentX += GameActivity.getEnemySpeed() * Math.cos(angle);
-        currentY += GameActivity.getEnemySpeed() * Math.sin(angle);
+        currentX += enemySpeed * Math.cos(angle);
+        currentY += enemySpeed * Math.sin(angle);
         enemy.setXPosition(currentX);
         enemy.setYPosition(currentY);
     }
@@ -155,7 +155,7 @@ public class EnemyManager {
 
     private void spawnEnemyList(ArrayList<Enemy> arrayList, Context context) {
         generator = new Random();
-        for (int i = 0; i < enemiesCount; i++) {
+        for (int i = 0; i < enemyNumber; i++) {
             arrayList.add(chooseEnemyType(generator.nextInt(4), context));
         }
     }

@@ -11,7 +11,8 @@ public class Enemy {
     private float killTime;
     private float escapeTime;
     private int points;
-    //screen side(0 top, 1 right, 2 bottom, 3 left), px on the side
+
+    //[screen side (0 top, 1 right, 2 bottom, 3 left), px on the side]
     private int[] movementInfo = new int[2];
 
 

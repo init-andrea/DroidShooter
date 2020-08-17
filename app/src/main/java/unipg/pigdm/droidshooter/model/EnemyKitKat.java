@@ -13,10 +13,12 @@ public class EnemyKitKat extends Enemy {
     private int points = 3;
 
     EnemyKitKat(Context context) {
+
         this.setName(name);
         this.setKillTime(killTime);
         this.setImage(BitmapFactory.decodeResource(context.getResources(), R.drawable.android_kitkat));
         this.setEscapeTime(escapeTime);
         this.setPoints(points);
     }
+
 }
