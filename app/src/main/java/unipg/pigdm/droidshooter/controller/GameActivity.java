@@ -55,8 +55,8 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     private static float yPosition, yAcceleration, yVelocity = 0.0f;
     private static float xMax, yMax;
 
-    private static final float XVELMAX = 0.2f;
-    private static final float YVELMAX = -3;
+    private static final float XVELMAX = 4.0f;
+    private static final float YVELMAX = 4.0f;
 
     private static final float FRAME_TIME =0.006f;
 
@@ -147,26 +147,13 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
             yAcceleration = sensorEvent.values[1];
         }
 
-        Log.d("xAcc: ", String.valueOf(xAcceleration));
-        Log.d("yAcc: ", String.valueOf(yAcceleration));
-
         //Calculate new speed
         xVelocity += (xAcceleration * FRAME_TIME);
         yVelocity += (yAcceleration * FRAME_TIME);
 
-        //checkMaxVelocity();
-
-        Log.d("xV: ", String.valueOf(xVelocity));
-        Log.d("yV: ", String.valueOf(yVelocity));
-
         //Calculate distance travelled in the time frame
         float xS = xVelocity + (xAcceleration / 2.0f) * FRAME_TIME * FRAME_TIME;
         float yS = yVelocity + (yAcceleration / 2.0f) * FRAME_TIME * FRAME_TIME;
-
-        Log.d("xS: ", String.valueOf(xS));
-        Log.d("yS: ", String.valueOf(yS));
-
-        //checkMaxXY();
 
         //Add to position negative for x value because sensor reads the opposite of what we want
         xPosition -= xS;
@@ -176,31 +163,24 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
 
     }
 
+    //Check if X or Y coordinates exceed the screen size and if the crosshair is on a side resets the velocity
     private void checkMaxXY() {
         if (xPosition > xMax) {
             xPosition = xMax;
+            xVelocity = 0;
         } else if (xPosition < 0) {
             xPosition = 0;
+            xVelocity = 0;
         }
         if (yPosition > yMax) {
             yPosition = yMax;
+            yVelocity = 0;
         } else if (yPosition < 0) {
             yPosition = 0;
-        }
-    }
-
-    private void checkMaxVelocity() {
-        if (xVelocity > XVELMAX) {
-            xVelocity = XVELMAX;
-        } else if (xVelocity < 0) {
-            xVelocity = 0;
-        }
-        if (yVelocity < YVELMAX) {
-            yVelocity = YVELMAX;
-        } else if (yVelocity > 0) {
             yVelocity = 0;
         }
     }
+
 
     public static float getCrosshairX() {
         return xPosition;
