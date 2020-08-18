@@ -1,20 +1,14 @@
 package unipg.pigdm.droidshooter.model;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.RectF;
-import android.util.Log;
-
-import androidx.preference.PreferenceManager;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 import unipg.pigdm.droidshooter.controller.GameActivity;
-import unipg.pigdm.droidshooter.controller.SettingsActivity;
-import unipg.pigdm.droidshooter.controller.StartGameActivity;
 import unipg.pigdm.droidshooter.view.CustomGameView;
 
 public class EnemyManager {

@@ -120,7 +120,6 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     public void gameStart() {
         gameWon = false;
         Log.d("logging start", "game started"); //TODO
-        Log.d("timeBeforeTImer", String.valueOf(timeLeftInMillis));
         countDownTimer = new CountDownTimer(timeLeftInMillis, 200) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -185,6 +184,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
 
     public void endGame() {
         Intent intent = new Intent(this, EndScreenActivity.class);
+        intent.putExtra("won_value", gameWon);
         startActivity(intent);
     }
 

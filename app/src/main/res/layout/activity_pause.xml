@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_width="wrap_content"
-            android:text="@string/resume_text" />
+            android:text="@string/resume_button" />
 
         <Button
             android:id="@+id/quitButton"
