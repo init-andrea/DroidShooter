@@ -29,7 +29,7 @@
     <PreferenceCategory android:title="@string/score_header">
 
         <SwitchPreferenceCompat
-            android:key="score"
+            android:key="show_score"
             android:title="@string/score_title"
             android:summaryOff="@string/score_summary_off"
             android:summaryOn="@string/score_summary_on"/>
@@ -39,7 +39,7 @@
     <PreferenceCategory android:title="@string/audio_header">
 
         <SwitchPreferenceCompat
-            android:key="audio"
+            android:key="audio_state"
             android:title="@string/audio_title"
             android:summaryOff="@string/audio_summary_off"
             android:summaryOn="@string/audio_summary_on" />

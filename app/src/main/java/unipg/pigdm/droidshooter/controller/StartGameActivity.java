@@ -3,6 +3,7 @@ package unipg.pigdm.droidshooter.controller;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,10 +14,6 @@ import android.widget.Button;
 import unipg.pigdm.droidshooter.R;
 
 public class StartGameActivity extends AppCompatActivity {
-
-    private Button startButton;
-    private Button quitButton;
-    private Button settingsButton;
 
     private View.OnClickListener startClickListener = new View.OnClickListener() {
 
@@ -50,9 +47,12 @@ public class StartGameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
-        startButton = findViewById(R.id.startButton);
-        quitButton = findViewById(R.id.quitButton);
-        settingsButton = findViewById(R.id.settingsButton);
+        SharedPreferences prefs = this.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        //SharedPreferences.Editor editor = prefs.edit();
+
+        Button startButton = findViewById(R.id.startButton);
+        Button quitButton = findViewById(R.id.quitButton);
+        Button settingsButton = findViewById(R.id.settingsButton);
 
         startButton.setOnClickListener(startClickListener);
         quitButton.setOnClickListener(quitClickListener);
@@ -66,9 +66,9 @@ public class StartGameActivity extends AppCompatActivity {
 
     public void startGame(View view) {
         Intent intent = new Intent(StartGameActivity.this, GameActivity.class);
-        GameActivity game = new GameActivity();
-        game.gameStart();
+        //GameActivity game = new GameActivity();
         startActivity(intent);
+        //game.gameStart();
     }
 
     public void quitGame(View view){

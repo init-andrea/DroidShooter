@@ -17,14 +17,27 @@
 
         <TextView
             android:id="@+id/scoreLabel"
-            android:layout_width="0dp"
+            android:layout_width="162dp"
             android:layout_height="wrap_content"
-            android:background="@android:color/white"
             android:layout_gravity="center"
-            android:gravity="start"
             android:layout_weight="1"
+            android:background="@android:color/white"
+            android:gravity="start"
             android:paddingVertical="14dp"
             android:text="@string/score_text"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/timerLabel"
+            android:layout_width="162dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="@android:color/white"
+            android:gravity="start"
+            android:paddingVertical="14dp"
+            android:text="@string/timer_text"
             android:textSize="18sp"
             android:textStyle="bold" />
 

@@ -36,6 +36,9 @@ public class CustomGameView extends View {
     private Bitmap crosshair;
     private Bitmap explosion;
     private int score;
+    private int aliveEnemies;
+    private boolean gameEnded;
+    private boolean gameWon;
     private Handler handler;
 
     private EnemyManager enemyManager;
@@ -91,6 +94,7 @@ public class CustomGameView extends View {
         width = getResources().getDisplayMetrics().widthPixels;
         height = getResources().getDisplayMetrics().heightPixels;
         enemyManager = new EnemyManager(this.getContext());
+        aliveEnemies = enemyManager.getEnemiesList().size();
         handler = new Handler();
         crosshair = BitmapFactory.decodeResource(getResources(), R.drawable.red_crosshair);
         explosion = BitmapFactory.decodeResource(getResources(), R.drawable.explosion);
@@ -118,23 +122,29 @@ public class CustomGameView extends View {
             if (enemyManager.isHit(enemy, GameActivity.getCrosshairX(), GameActivity.getCrosshairY(), CROSSHAIR_SIZE_DP, density) && !enemy.isDead()) {
                 //explode(canvas, enemy.getXPosition(), enemy.getYPosition());
                 canvas.drawBitmap(explosion, enemy.getXPosition(), enemy.getYPosition(), null);
+                //enemy.setDead(true);
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         enemy.setDead(true);
                     }
-                }, 2000);
+                }, 1500);
+
                 this.score += enemy.getPoints();
             }
         }
+
+        if (aliveEnemies == 0) {
+            GameActivity.winGame();
+
+        }
+
 
         //loop through list of alive enemies to draw them
         for (Enemy enemy : enemyManager.getEnemiesList()) {
             if (enemy.isAlive()) {
                 enemyManager.moveEnemy(enemy);
                 canvas.drawBitmap(enemy.getImage(), enemy.getXPosition(), enemy.getYPosition(), null);
-                //Log.d("n:", String.valueOf(enemyManager.getEnemiesList().indexOf(enemy)));
-                //Log.d("values:", "x:" + enemy.getXPosition() + "y:" + enemy.getYPosition());
             }
         }
 

@@ -8,9 +8,14 @@
     <string name="start_button">START</string>
     <string name="quit_button">QUIT</string>
     <string name="settings_button">SETTINGS</string>
-    <string name="score_text">Score: %d</string>
+    <string name="score_text">Score: </string>
+    <string name="timer_text">Time: </string>
     <string name="highscore_text">Highscore: </string>
     <string name="resume_text">RESUME</string>
+    <string name="restart_text">RESTART</string>
+    <string name="won_text">YOU WON!</string>
+    <string name="lost_text">YOU LOST, TRY AGAIN!</string>
+    <string name="preference_file_key">unipg.pigdm.droidshooter</string>
 
     <!-- Preference Titles -->
     <string name="game_header">Game</string>

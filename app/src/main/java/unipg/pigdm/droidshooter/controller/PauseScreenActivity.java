@@ -56,12 +56,12 @@ public class PauseScreenActivity extends AppCompatActivity {
         quitButton.setOnClickListener(quitClickListener);
     }
 
-    public static void changeAudioState(ImageButton audioButton, View view) {
+    public void changeAudioState(View view) {
+        audioState = !audioState;
         if (audioState)
-            audioButton.setImageResource(R.drawable.audio_off);
+            audioButton.setImageResource(R.drawable.audio_on);
         else
             audioButton.setImageResource(R.drawable.audio_off);
-        audioState = !audioState;
     }
 
     private void resumeGame(View view) {

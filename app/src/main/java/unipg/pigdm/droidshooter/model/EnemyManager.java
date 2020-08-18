@@ -22,7 +22,8 @@ public class EnemyManager {
     private Random generator;
     private int enemyNumber;
     private float enemySpeed;
-    private float density, xMax, yMax;
+    private float xMax;
+    private float yMax;
 
     private ArrayList<Enemy> enemiesList;
 
@@ -30,7 +31,7 @@ public class EnemyManager {
         enemiesList = new ArrayList<>();
         xMax = CustomGameView.getMaxWidth() - pxFromDp(44);
         yMax = CustomGameView.getMaxHeight() - pxFromDp(44);
-        density = CustomGameView.getDensity();
+        float density = CustomGameView.getDensity();
         enemyNumber = GameActivity.getEnemyNumber();
         enemySpeed = GameActivity.getEnemySpeed();
         spawnEnemyList(enemiesList, context);
