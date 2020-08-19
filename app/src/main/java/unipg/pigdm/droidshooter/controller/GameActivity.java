@@ -1,8 +1,5 @@
 package unipg.pigdm.droidshooter.controller;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.preference.PreferenceManager;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,27 +9,36 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
+
 import java.util.Locale;
 import java.util.Objects;
 
 import unipg.pigdm.droidshooter.R;
-import unipg.pigdm.droidshooter.model.EnemyManager;
+import unipg.pigdm.droidshooter.util.Utilities;
 import unipg.pigdm.droidshooter.view.CustomGameView;
 
+import static unipg.pigdm.droidshooter.util.Utilities.pxFromDp;
+
 public class GameActivity extends AppCompatActivity implements SensorEventListener {
+
+    private static final int TOTAL_HIGHSCORES_NUMBER = 9; // from 0 to 9, 10 total highscores
+    private static final int DEFAULT_ENEMIES_NUMBER = 5;
+    private static final float DEFAULT_ENEMIES_SPEED = 5;
+    private static final long DEFAULT_GAME_TIMER = 30;
+
 
     private static int score;
     private int prevScore;
     private static float enemySpeed = R.string.default_enemies_speed;
     private static int enemyNumber = R.string.default_enemies_number;
     private static float gameTimer = R.string.default_timer_value;
-    private static int highScores = 9; // from 0 to 9, 10 total highscores
     private static boolean showScore;
     private static boolean audioState;
     private TextView scoreText;
@@ -91,8 +97,8 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         pauseButton = findViewById(R.id.pauseButton);
         scoreText.setText(R.string.score_text);
 
-        xMax = CustomGameView.getMaxWidth() - (float)EnemyManager.pxFromDp(66);
-        yMax = CustomGameView.getMaxHeight() - (float)EnemyManager.pxFromDp(66);
+        xMax = CustomGameView.getMaxWidth() - (float) pxFromDp(66);
+        yMax = CustomGameView.getMaxHeight() - (float) pxFromDp(66);
 
         /*
         if (!showScore) {
@@ -160,13 +166,16 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         textViewCountDown.setText(timeLeftFormatted);
     }
 
+
+    //Gets user settings and checks for user input
     public void getPreferences() {
-        enemySpeed = Float.parseFloat(Objects.requireNonNull(settingsPrefs.getString("enemy_speed", getString(R.string.default_enemies_speed))));
-        enemyNumber = Integer.parseInt(Objects.requireNonNull(settingsPrefs.getString("enemy_number", getString(R.string.default_enemies_number))));
-        gameTimer = Long.parseLong(Objects.requireNonNull(settingsPrefs.getString("game_timer", getString(R.string.default_timer_value)))) * 1000;
+        enemySpeed = Utilities.checkUserInput(Objects.requireNonNull(settingsPrefs.getString("enemy_speed", String.valueOf(DEFAULT_ENEMIES_SPEED))), DEFAULT_ENEMIES_SPEED);
+        enemyNumber = Utilities.checkUserInput(Objects.requireNonNull(settingsPrefs.getString("enemy_number", String.valueOf(DEFAULT_ENEMIES_NUMBER))), DEFAULT_ENEMIES_NUMBER);
+        gameTimer = Utilities.checkUserInput(Objects.requireNonNull(settingsPrefs.getString("game_timer", String.valueOf(DEFAULT_GAME_TIMER))), DEFAULT_GAME_TIMER) * 1000;
         showScore = settingsPrefs.getBoolean("show_score", true);
         audioState = settingsPrefs.getBoolean("audio_state", true);
     }
+
 
     public static int getScore() {
         return score;
@@ -181,16 +190,16 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     private void updateHighScores() {
         editor = scorePrefs.edit();
         int possibleHighScore = 0;
-        int possibleHighScoreIndex = highScores + 1;
-        for (int i = highScores; i >= 0; i--) {
+        int possibleHighScoreIndex = TOTAL_HIGHSCORES_NUMBER + 1;
+        for (int i = TOTAL_HIGHSCORES_NUMBER; i >= 0; i--) {
             if (scorePrefs.getInt("highscore" + i, 0) < score) {
                 possibleHighScore = score;
                 possibleHighScoreIndex = i;
             }
             //Log.d("highscore" + i, String.valueOf(scorePrefs.getInt("highscore" + i, 0)));
         }
-        if (possibleHighScoreIndex != highScores + 1)
-        editor.putInt("highscore" + possibleHighScoreIndex, possibleHighScore);
+        if (possibleHighScoreIndex != TOTAL_HIGHSCORES_NUMBER + 1)
+            editor.putInt("highscore" + possibleHighScoreIndex, possibleHighScore);
         editor.apply();
     }
 
@@ -210,6 +219,11 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         Intent intent = new Intent(this, EndScreenActivity.class);
         intent.putExtra("won_value", gameWon);
         startActivity(intent);
+        resetCrosshair();
+    }
+
+    private void resetCrosshair() {
+        xPosition = xAcceleration = xVelocity = yPosition = yAcceleration = yVelocity = 0.0f;
     }
 
     @Override

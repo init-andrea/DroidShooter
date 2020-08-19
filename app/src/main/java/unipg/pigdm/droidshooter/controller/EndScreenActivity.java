@@ -1,5 +1,6 @@
 package unipg.pigdm.droidshooter.controller;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -12,7 +13,7 @@ import unipg.pigdm.droidshooter.R;
 public class EndScreenActivity extends AppCompatActivity {
 
     private TextView endText, endScore;
-    private Button restartButton, menuButton;
+    private Button restartButton, menuButton, quitButton;
 
     private View.OnClickListener restartClickListener = new View.OnClickListener() {
 
@@ -32,6 +33,15 @@ public class EndScreenActivity extends AppCompatActivity {
 
     };
 
+    private View.OnClickListener quitClickListener = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            quitGame();
+        }
+
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,11 +53,13 @@ public class EndScreenActivity extends AppCompatActivity {
         endText = findViewById(R.id.endGameTextView);
         restartButton = findViewById(R.id.restartButton);
         menuButton = findViewById(R.id.menuButton);
+        quitButton = findViewById(R.id.endQuitButton);
         endScore.setText(String.valueOf(GameActivity.getScore()));
         setEndText(gameWon);
 
         restartButton.setOnClickListener(restartClickListener);
         menuButton.setOnClickListener(menuClickListener);
+        quitButton.setOnClickListener(quitClickListener);
     }
 
     private void setEndText(boolean result) {
@@ -59,11 +71,19 @@ public class EndScreenActivity extends AppCompatActivity {
     }
 
     private void restartGame(View view) {
-
+        Intent intent = new Intent(EndScreenActivity.this, GameActivity.class);
+        startActivity(intent);
     }
 
     private void backToMenu(View view) {
+        Intent intent = new Intent(EndScreenActivity.this, StartGameActivity.class);
+        startActivity(intent);
+    }
 
+    private void quitGame() {
+        finishAffinity();
+        finish();
+        System.exit(0);
     }
 
 }

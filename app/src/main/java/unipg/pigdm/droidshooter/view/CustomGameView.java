@@ -1,35 +1,25 @@
 package unipg.pigdm.droidshooter.view;
 
-import unipg.pigdm.droidshooter.controller.GameActivity;
-import unipg.pigdm.droidshooter.controller.SettingsActivity;
-import unipg.pigdm.droidshooter.model.Enemy;
-import unipg.pigdm.droidshooter.model.EnemyManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.PixelFormat;
-import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.WindowManager;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import unipg.pigdm.droidshooter.R;
+import unipg.pigdm.droidshooter.controller.GameActivity;
+import unipg.pigdm.droidshooter.model.Enemy;
+import unipg.pigdm.droidshooter.model.EnemyManager;
+
+import static unipg.pigdm.droidshooter.util.Utilities.pxFromDp;
 
 public class CustomGameView extends View {
 
@@ -109,8 +99,8 @@ public class CustomGameView extends View {
             public void onGlobalLayout() {
                 getViewTreeObserver().removeOnGlobalLayoutListener(this);
 
-                crosshair = enemyManager.getResizedImage(crosshair, EnemyManager.pxFromDp(CROSSHAIR_SIZE_DP), EnemyManager.pxFromDp(CROSSHAIR_SIZE_DP));
-                explosion = enemyManager.getResizedImage(explosion, EnemyManager.pxFromDp(44), EnemyManager.pxFromDp(44));
+                crosshair = enemyManager.getResizedImage(crosshair, pxFromDp(CROSSHAIR_SIZE_DP), pxFromDp(CROSSHAIR_SIZE_DP));
+                explosion = enemyManager.getResizedImage(explosion, pxFromDp(44), pxFromDp(44));
             }
         });
     }

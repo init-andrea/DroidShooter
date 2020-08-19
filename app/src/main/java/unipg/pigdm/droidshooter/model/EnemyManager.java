@@ -11,6 +11,8 @@ import java.util.Random;
 import unipg.pigdm.droidshooter.controller.GameActivity;
 import unipg.pigdm.droidshooter.view.CustomGameView;
 
+import static unipg.pigdm.droidshooter.util.Utilities.pxFromDp;
+
 public class EnemyManager {
 
     private Random generator;
@@ -172,13 +174,15 @@ public class EnemyManager {
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
+    /*
     //From dp to px
     public static int pxFromDp(float dp) {
         return (int) (dp * CustomGameView.getDensity());
     }
 
-    //from px to dp
+    //From px to dp
     public static int dpFromPx(float px) {
         return (int) (px / CustomGameView.getDensity());
     }
+    */
 }

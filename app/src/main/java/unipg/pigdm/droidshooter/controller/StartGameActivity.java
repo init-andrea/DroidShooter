@@ -1,16 +1,15 @@
 package unipg.pigdm.droidshooter.controller;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import unipg.pigdm.droidshooter.R;
 
@@ -33,7 +32,7 @@ public class StartGameActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            quitGame(v);
+            quitGame();
         }
 
     };
@@ -78,7 +77,7 @@ public class StartGameActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void quitGame(View view){
+    public void quitGame() {
         finishAffinity();
         finish();
         System.exit(0);
