@@ -158,7 +158,6 @@ public class CustomGameView extends View {
 
         if (aliveEnemies == 0) {
             GameActivity.winGame();
-            Log.d("gamewon", "Game Won!");
         }
 
 

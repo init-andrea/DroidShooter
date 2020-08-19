@@ -2,6 +2,7 @@ package unipg.pigdm.droidshooter.controller;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -49,8 +50,7 @@ public class PauseScreenActivity extends AppCompatActivity {
         resumeButton = findViewById(R.id.resumeButton);
         quitButton = findViewById(R.id.quitButton);
 
-        String scoreString = "" + R.string.score_text + GameActivity.getScore();
-        score.setText(scoreString);
+        score.setText(String.valueOf(getIntent().getIntExtra("score", 0)));
 
         resumeButton.setOnClickListener(resumeClickListener);
         quitButton.setOnClickListener(quitClickListener);

@@ -86,7 +86,6 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
 
         setContentView(R.layout.activity_game);
 
-        Log.d("time", "gameT" + gameTimer + "timeL" + timeLeftInMillis);
         scoreText = findViewById(R.id.scoreLabel);
         textViewCountDown = findViewById(R.id.timerLabel);
         pauseButton = findViewById(R.id.pauseButton);
@@ -124,12 +123,11 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
 
     public void gameStart() {
         gameWon = false;
-        Log.d("logging start", "game started"); //TODO
+        //TODO
         countDownTimer = new CountDownTimer(timeLeftInMillis, 200) {
             @Override
             public void onTick(long millisUntilFinished) {
                 timeLeftInMillis = millisUntilFinished;
-                Log.d("timeInTimer", String.valueOf(timeLeftInMillis));
                 updateCountDownText();
                 if (prevScore != score) {
                     scoreText.setText(String.valueOf(score));
@@ -147,6 +145,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
             public void onFinish() {
                 timerRunning = false;
                 gameEnded = true;
+                updateHighScores();
                 endGame();
             }
         }.start();
@@ -183,11 +182,12 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         editor = scorePrefs.edit();
         int possibleHighScore = 0;
         int possibleHighScoreIndex = highScores + 1;
-        for (int i = highScores; i > 0; i--) {
+        for (int i = highScores; i >= 0; i--) {
             if (scorePrefs.getInt("highscore" + i, 0) < score) {
                 possibleHighScore = score;
                 possibleHighScoreIndex = i;
             }
+            //Log.d("highscore" + i, String.valueOf(scorePrefs.getInt("highscore" + i, 0)));
         }
         if (possibleHighScoreIndex != highScores + 1)
         editor.putInt("highscore" + possibleHighScoreIndex, possibleHighScore);
@@ -197,6 +197,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     public void pauseGame(View view) {
         Intent intent = new Intent(GameActivity.this, PauseScreenActivity.class);
         countDownTimer.cancel();
+        intent.putExtra("score", score);
         startActivity(intent);
     }
 
