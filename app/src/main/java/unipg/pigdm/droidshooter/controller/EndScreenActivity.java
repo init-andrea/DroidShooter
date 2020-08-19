@@ -11,8 +11,8 @@ import unipg.pigdm.droidshooter.R;
 
 public class EndScreenActivity extends AppCompatActivity {
 
-    private TextView endText;
-    private Button restartButton;
+    private TextView endText, endScore;
+    private Button restartButton, menuButton;
 
     private View.OnClickListener restartClickListener = new View.OnClickListener() {
 
@@ -23,19 +23,31 @@ public class EndScreenActivity extends AppCompatActivity {
 
     };
 
+    private View.OnClickListener menuClickListener = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            backToMenu(v);
+        }
+
+    };
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         boolean gameWon = getIntent().getBooleanExtra("won_value", false);
         setContentView(R.layout.activity_end);
 
+        endScore = findViewById(R.id.endGameScore);
         endText = findViewById(R.id.endGameTextView);
         restartButton = findViewById(R.id.restartButton);
+        menuButton = findViewById(R.id.menuButton);
+        endScore.setText(String.valueOf(GameActivity.getScore()));
         setEndText(gameWon);
 
-
-
         restartButton.setOnClickListener(restartClickListener);
+        menuButton.setOnClickListener(menuClickListener);
     }
 
     private void setEndText(boolean result) {
@@ -49,4 +61,9 @@ public class EndScreenActivity extends AppCompatActivity {
     private void restartGame(View view) {
 
     }
+
+    private void backToMenu(View view) {
+
+    }
+
 }

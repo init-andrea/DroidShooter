@@ -49,7 +49,8 @@ public class PauseScreenActivity extends AppCompatActivity {
         resumeButton = findViewById(R.id.resumeButton);
         quitButton = findViewById(R.id.quitButton);
 
-        score.setText(getString(R.string.score_text, GameActivity.getScore()));
+        String scoreString = "" + R.string.score_text + GameActivity.getScore();
+        score.setText(scoreString);
 
         resumeButton.setOnClickListener(resumeClickListener);
         quitButton.setOnClickListener(quitClickListener);

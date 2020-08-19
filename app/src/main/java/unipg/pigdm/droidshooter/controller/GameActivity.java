@@ -27,16 +27,20 @@ import unipg.pigdm.droidshooter.view.CustomGameView;
 
 public class GameActivity extends AppCompatActivity implements SensorEventListener {
 
-    private static int score = 0;
+    private static int score;
+    private int prevScore;
     private static float enemySpeed = R.string.default_enemies_speed;
     private static int enemyNumber = R.string.default_enemies_number;
     private static float gameTimer = R.string.default_timer_value;
+    private static int highScores = 9; // from 0 to 9, 10 total highscores
     private static boolean showScore;
     private static boolean audioState;
     private TextView scoreText;
     private TextView textViewCountDown;
 
     private SharedPreferences settingsPrefs;
+    private SharedPreferences scorePrefs;
+    SharedPreferences.Editor editor;
 
     private ImageButton pauseButton;
 
@@ -72,12 +76,13 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         super.onCreate(savedInstanceState);
 
         settingsPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        scorePrefs = this.getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
         getPreferences();
 
         timeLeftInMillis = (long)gameTimer;
         gameEnded = false;
         gameWon = false;
-        score = 0;
+        score = prevScore = 0;
 
         setContentView(R.layout.activity_game);
 
@@ -126,8 +131,13 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
                 timeLeftInMillis = millisUntilFinished;
                 Log.d("timeInTimer", String.valueOf(timeLeftInMillis));
                 updateCountDownText();
+                if (prevScore != score) {
+                    scoreText.setText(String.valueOf(score));
+                    prevScore = score;
+                }
                 if (gameWon) {
                     timerRunning = false;
+                    updateHighScores();
                     endGame();
                     countDownTimer.cancel();
                 }
@@ -163,13 +173,26 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         return score;
     }
 
-    /*
-    public void updateScore(int points) {
+
+    public static void updateScore(int points) {
         //TODO
         score += points;
-        scoreText.setText(score);
     }
-    */
+
+    private void updateHighScores() {
+        editor = scorePrefs.edit();
+        int possibleHighScore = 0;
+        int possibleHighScoreIndex = highScores + 1;
+        for (int i = highScores; i > 0; i--) {
+            if (scorePrefs.getInt("highscore" + i, 0) < score) {
+                possibleHighScore = score;
+                possibleHighScoreIndex = i;
+            }
+        }
+        if (possibleHighScoreIndex != highScores + 1)
+        editor.putInt("highscore" + possibleHighScoreIndex, possibleHighScore);
+        editor.apply();
+    }
 
     public void pauseGame(View view) {
         Intent intent = new Intent(GameActivity.this, PauseScreenActivity.class);

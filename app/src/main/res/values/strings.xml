@@ -8,8 +8,8 @@
     <string name="start_button">START</string>
     <string name="quit_button">QUIT</string>
     <string name="settings_button">SETTINGS</string>
-    <string name="score_text">Score: </string>
-    <string name="timer_text">Time: </string>
+    <string name="score_text">0</string>
+    <string name="timer_text">0</string>
     <string name="highscore_text">Highscore: </string>
     <string name="resume_button">RESUME</string>
     <string name="restart_button">RESTART</string>

@@ -12,8 +12,10 @@ import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -37,6 +39,7 @@ public class CustomGameView extends View {
     private Bitmap explosion;
     private int score;
     private int aliveEnemies;
+    private long timeLeft = 2000;
     private boolean gameEnded;
     private boolean gameWon;
     private Handler handler;
@@ -113,7 +116,7 @@ public class CustomGameView extends View {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(final Canvas canvas) {
 
         canvas.drawColor(Color.WHITE);
 
@@ -121,22 +124,41 @@ public class CustomGameView extends View {
         for (final Enemy enemy : enemyManager.getEnemiesList()) {
             if (enemyManager.isHit(enemy, GameActivity.getCrosshairX(), GameActivity.getCrosshairY(), CROSSHAIR_SIZE_DP, density) && !enemy.isDead()) {
                 //explode(canvas, enemy.getXPosition(), enemy.getYPosition());
+                /*
+                CountDownTimer explosionAnimationTimer = new CountDownTimer(timeLeft, 100) {
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+                        timeLeft = millisUntilFinished;
+                        canvas.drawBitmap(explosion, enemy.getXPosition(), enemy.getYPosition(), null);
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        //enemyManager.getEnemiesList().remove(enemy);
+                    }
+                }.start();
+                */
                 canvas.drawBitmap(explosion, enemy.getXPosition(), enemy.getYPosition(), null);
-                //enemy.setDead(true);
+                enemy.setDead(true);
+                aliveEnemies --;
+                /*
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         enemy.setDead(true);
                     }
                 }, 1500);
+                */
 
-                this.score += enemy.getPoints();
+                GameActivity.updateScore(enemy.getPoints());
             }
         }
 
+        //TODO add list of dead enemies to draw the image on screen with countdowntimer(?)
+
         if (aliveEnemies == 0) {
             GameActivity.winGame();
-
+            Log.d("gamewon", "Game Won!");
         }
 
 
