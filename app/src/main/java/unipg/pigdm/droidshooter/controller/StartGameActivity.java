@@ -3,6 +3,7 @@ package unipg.pigdm.droidshooter.controller;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
@@ -14,10 +15,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import unipg.pigdm.droidshooter.R;
 
 public class StartGameActivity extends AppCompatActivity {
-
-    private TextView highScoreText;
-    private String highScore;
-    private SharedPreferences prefs;
 
     private View.OnClickListener startClickListener = new View.OnClickListener() {
 
@@ -48,16 +45,16 @@ public class StartGameActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
-        prefs = this.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        highScore = "All time HighScore: " + prefs.getInt("highscore0", 0);
+        SharedPreferences prefs = this.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 
         setContentView(R.layout.activity_start);
 
-        highScoreText = findViewById(R.id.highScore);
+        TextView highScoreText = findViewById(R.id.highScore);
 
-        highScoreText.setText(String.valueOf(highScore));
+        highScoreText.setText(String.valueOf(prefs.getInt("highscore0", 0)));
 
         Button startButton = findViewById(R.id.startButton);
         Button quitButton = findViewById(R.id.quitButton);
@@ -69,7 +66,7 @@ public class StartGameActivity extends AppCompatActivity {
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     public void startGame(View view) {

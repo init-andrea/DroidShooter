@@ -10,7 +10,7 @@
     <string name="settings_button">SETTINGS</string>
     <string name="score_text">0</string>
     <string name="timer_text">0</string>
-    <string name="highscore_text">Highscore: </string>
+    <string name="highscore_text">Your HighScore: </string>
     <string name="resume_button">RESUME</string>
     <string name="restart_button">RESTART</string>
     <string name="menu_button">MENU</string>

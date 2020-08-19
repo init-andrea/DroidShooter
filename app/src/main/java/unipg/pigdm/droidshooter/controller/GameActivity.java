@@ -97,15 +97,14 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         pauseButton = findViewById(R.id.pauseButton);
         scoreText.setText(R.string.score_text);
 
-        xMax = CustomGameView.getMaxWidth() - (float) pxFromDp(66);
-        yMax = CustomGameView.getMaxHeight() - (float) pxFromDp(66);
-
-        /*
         if (!showScore) {
             scoreText.setVisibility(View.INVISIBLE);
             scoreText.setHeight(0);
         }
-        */
+
+        xMax = CustomGameView.getMaxWidth() - (float) pxFromDp(66);
+        yMax = CustomGameView.getMaxHeight() - (float) pxFromDp(66);
+
 
         pauseButton.setOnClickListener(pauseGameListener);
 
