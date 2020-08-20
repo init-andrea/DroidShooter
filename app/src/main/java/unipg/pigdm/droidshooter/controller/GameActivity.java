@@ -86,13 +86,34 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         settingsPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         scorePrefs = this.getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
         getPreferences();
+
+        if (getIntent().getBooleanExtra("gameStarted", false) || getIntent().getBooleanExtra("gameRestarted", false)) {
+            timeLeftInMillis = gameTimer;
+            score = prevScore = 0;
+            gameEnded = false;
+            gameWon = false;
+        }
+
+        if (gameResumed) {
+            gameState = getIntent().getParcelableExtra("gameState");
+            if (gameState != null) {
+                score = gameState.getScore();
+                Log.d("gameState", String.valueOf(gameState.getScore()));
+                Log.d("size", String.valueOf(gameState.getEnemies().size()));
+                //customGameView.setEnemies(gameState.getEnemies());
+                timeLeftInMillis = gameState.getTimeLeftInMillis();
+                xPosition = gameState.getCrosshairXPosition();
+                yPosition = gameState.getCrosshairYPosition();
+                //gameStart();
+            }
+        }
+
+        /*
         if (!gameResumed) {
             timeLeftInMillis = gameTimer;
             score = prevScore = 0;
         }
-
-        gameEnded = false;
-        gameWon = false;
+        */
 
         customGameView = new CustomGameView(this);
 
@@ -118,12 +139,11 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        if (getIntent().getBooleanExtra("gameStarted", false))
-            gameStart();
+
         if (gameResumed)
             gameResumed = false;
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
+        gameStart();
     }
 
     /*
@@ -217,10 +237,6 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         startActivity(intent);
     }
 
-    private void resumeGame() {
-
-    }
-
     public static void winGame() {
         gameWon = true;
         gameEnded = true;
@@ -230,11 +246,13 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         Intent intent = new Intent(this, EndScreenActivity.class);
         intent.putExtra("won_value", gameWon);
         startActivity(intent);
-        resetCrosshair();
+        resetGame();
     }
 
-    private void resetCrosshair() {
+    private void resetGame() {
         xPosition = xAcceleration = xVelocity = yPosition = yAcceleration = yVelocity = 0.0f;
+        getPreferences();
+        gameResumed = false;
     }
 
     @Override
@@ -310,17 +328,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     protected void onResume() {
         super.onResume();
         gameResumed = true;
-        gameState = (GameState) getIntent().getParcelableExtra("gameState");
-        if (gameState != null) {
-            score = gameState.getScore();
-            Log.d("gameState", String.valueOf(gameState.getScore()));
-            Log.d("size", String.valueOf(gameState.getEnemies().size()));
-            customGameView.setEnemies(gameState.getEnemies());
-            timeLeftInMillis = gameState.getTimeLeftInMillis();
-            xPosition = gameState.getCrosshairXPosition();
-            yPosition = gameState.getCrosshairYPosition();
-            gameStart();
-        }
+
 
         sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_FASTEST);
     }

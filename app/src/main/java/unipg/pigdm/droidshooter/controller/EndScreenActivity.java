@@ -71,12 +71,15 @@ public class EndScreenActivity extends AppCompatActivity {
     }
 
     private void restartGame(View view) {
+        finishAffinity();
         Intent intent = new Intent(EndScreenActivity.this, GameActivity.class);
+        intent.putExtra("gameRestarted", true);
         startActivity(intent);
     }
 
     private void backToMenu(View view) {
         Intent intent = new Intent(EndScreenActivity.this, StartGameActivity.class);
+        finishAffinity();
         startActivity(intent);
     }
 
