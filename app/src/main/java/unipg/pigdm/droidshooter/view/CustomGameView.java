@@ -14,6 +14,8 @@ import android.view.ViewTreeObserver;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
+import java.util.ArrayList;
+
 import unipg.pigdm.droidshooter.R;
 import unipg.pigdm.droidshooter.controller.GameActivity;
 import unipg.pigdm.droidshooter.model.Enemy;
@@ -33,6 +35,7 @@ public class CustomGameView extends View {
     private boolean gameEnded;
     private boolean gameWon;
     private Handler handler;
+    private ArrayList<Enemy> enemies = null;
 
     private EnemyManager enemyManager;
 
@@ -86,7 +89,8 @@ public class CustomGameView extends View {
         density = getResources().getDisplayMetrics().density;
         width = getResources().getDisplayMetrics().widthPixels;
         height = getResources().getDisplayMetrics().heightPixels;
-        enemyManager = new EnemyManager(this.getContext());
+        enemyManager = new EnemyManager(this.getContext(), enemies);
+        enemies = new ArrayList<>(enemyManager.getEnemiesList());
         aliveEnemies = enemyManager.getEnemiesList().size();
         handler = new Handler();
         crosshair = BitmapFactory.decodeResource(getResources(), R.drawable.red_crosshair);
@@ -163,6 +167,16 @@ public class CustomGameView extends View {
         canvas.drawBitmap(crosshair, GameActivity.getCrosshairX(), GameActivity.getCrosshairY(), null);
 
         this.invalidate();
+    }
+
+    public ArrayList<Enemy> getEnemies() {
+        return this.enemyManager.getEnemiesList();
+    }
+
+    public void setEnemies(ArrayList<Enemy> enemies) {
+        if (this.enemies != null)
+            this.enemies.clear();
+        this.enemies = new ArrayList<>(enemies);
     }
 
     /*

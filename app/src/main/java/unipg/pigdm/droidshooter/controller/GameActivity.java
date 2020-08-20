@@ -3,12 +3,14 @@ package unipg.pigdm.droidshooter.controller;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
@@ -17,10 +19,12 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
 
 import unipg.pigdm.droidshooter.R;
+import unipg.pigdm.droidshooter.model.GameState;
 import unipg.pigdm.droidshooter.util.Utilities;
 import unipg.pigdm.droidshooter.view.CustomGameView;
 
@@ -36,19 +40,19 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
 
     private static int score;
     private int prevScore;
-    private static float enemySpeed = R.string.default_enemies_speed;
-    private static int enemyNumber = R.string.default_enemies_number;
-    private static float gameTimer = R.string.default_timer_value;
+    private static final float FRAME_TIME = 0.006f;
+    private static float enemySpeed;
+    private static int enemyNumber;
     private static boolean showScore;
     private static boolean audioState;
+    private static long gameTimer;
     private TextView scoreText;
     private TextView textViewCountDown;
+    private static boolean gameResumed = false;
 
     private SharedPreferences settingsPrefs;
     private SharedPreferences scorePrefs;
     SharedPreferences.Editor editor;
-
-    private ImageButton pauseButton;
 
     private View.OnClickListener pauseGameListener = new View.OnClickListener() {
 
@@ -60,19 +64,17 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     };
 
     private CountDownTimer countDownTimer;
-    private boolean timerRunning;
     private long timeLeftInMillis;
-
 
     private static boolean gameEnded;
     private static boolean gameWon;
+    private GameState gameState;
 
     //Crosshair movement
     private static float xPosition, xAcceleration, xVelocity = 0.0f;
     private static float yPosition, yAcceleration, yVelocity = 0.0f;
     private static float xMax, yMax;
-
-    private static final float FRAME_TIME =0.006f;
+    private CustomGameView customGameView;
 
     //Sensor manager
     private SensorManager sensorManager = null;
@@ -84,27 +86,30 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         settingsPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         scorePrefs = this.getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
         getPreferences();
+        if (!gameResumed) {
+            timeLeftInMillis = gameTimer;
+            score = prevScore = 0;
+        }
 
-        timeLeftInMillis = (long)gameTimer;
         gameEnded = false;
         gameWon = false;
-        score = prevScore = 0;
+
+        customGameView = new CustomGameView(this);
 
         setContentView(R.layout.activity_game);
 
         scoreText = findViewById(R.id.scoreLabel);
-        textViewCountDown = findViewById(R.id.timerLabel);
-        pauseButton = findViewById(R.id.pauseButton);
-        scoreText.setText(R.string.score_text);
-
         if (!showScore) {
             scoreText.setVisibility(View.INVISIBLE);
             scoreText.setHeight(0);
         }
+        scoreText.setText(String.valueOf(score));
+
+        textViewCountDown = findViewById(R.id.timerLabel);
+        ImageButton pauseButton = findViewById(R.id.pauseButton);
 
         xMax = CustomGameView.getMaxWidth() - (float) pxFromDp(66);
         yMax = CustomGameView.getMaxHeight() - (float) pxFromDp(66);
-
 
         pauseButton.setOnClickListener(pauseGameListener);
 
@@ -113,8 +118,11 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        gameStart();
-        //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        if (getIntent().getBooleanExtra("gameStarted", false))
+            gameStart();
+        if (gameResumed)
+            gameResumed = false;
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
     }
 
@@ -126,7 +134,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     }
     */
 
-    public void gameStart() {
+    private void gameStart() {
         gameWon = false;
         //TODO
         countDownTimer = new CountDownTimer(timeLeftInMillis, 200) {
@@ -139,7 +147,6 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
                     prevScore = score;
                 }
                 if (gameWon) {
-                    timerRunning = false;
                     updateHighScores();
                     endGame();
                     countDownTimer.cancel();
@@ -148,14 +155,11 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
 
             @Override
             public void onFinish() {
-                timerRunning = false;
                 gameEnded = true;
                 updateHighScores();
                 endGame();
             }
         }.start();
-        timerRunning = true;
-
     }
 
     private void updateCountDownText() {
@@ -165,9 +169,8 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         textViewCountDown.setText(timeLeftFormatted);
     }
 
-
     //Gets user settings and checks for user input
-    public void getPreferences() {
+    private void getPreferences() {
         enemySpeed = Utilities.checkUserInput(Objects.requireNonNull(settingsPrefs.getString("enemy_speed", String.valueOf(DEFAULT_ENEMIES_SPEED))), DEFAULT_ENEMIES_SPEED);
         enemyNumber = Utilities.checkUserInput(Objects.requireNonNull(settingsPrefs.getString("enemy_number", String.valueOf(DEFAULT_ENEMIES_NUMBER))), DEFAULT_ENEMIES_NUMBER);
         gameTimer = Utilities.checkUserInput(Objects.requireNonNull(settingsPrefs.getString("game_timer", String.valueOf(DEFAULT_GAME_TIMER))), DEFAULT_GAME_TIMER) * 1000;
@@ -175,11 +178,9 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         audioState = settingsPrefs.getBoolean("audio_state", true);
     }
 
-
     public static int getScore() {
         return score;
     }
-
 
     public static void updateScore(int points) {
         //TODO
@@ -202,11 +203,22 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         editor.apply();
     }
 
-    public void pauseGame(View view) {
+    private void pauseGame(View view) {
         Intent intent = new Intent(GameActivity.this, PauseScreenActivity.class);
         countDownTimer.cancel();
-        intent.putExtra("score", score);
+        //gameResumed = false;
+        //intent.putExtra("score", score);
+        if (gameState != null && gameState.getEnemies() != null)
+            gameState.getEnemies().clear();
+        gameState = new GameState(new ArrayList<>(customGameView.getEnemies()), score, timeLeftInMillis, xPosition, yPosition);
+        Log.d("getEnemies", String.valueOf(customGameView.getEnemies().size()));
+        Log.d("enemiesGameState", String.valueOf(gameState.getEnemies().size()));
+        intent.putExtra("gameState", gameState);
         startActivity(intent);
+    }
+
+    private void resumeGame() {
+
     }
 
     public static void winGame() {
@@ -214,7 +226,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         gameEnded = true;
     }
 
-    public void endGame() {
+    private void endGame() {
         Intent intent = new Intent(this, EndScreenActivity.class);
         intent.putExtra("won_value", gameWon);
         startActivity(intent);
@@ -266,7 +278,6 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         }
     }
 
-
     public static float getCrosshairX() {
         return xPosition;
     }
@@ -298,6 +309,19 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onResume() {
         super.onResume();
+        gameResumed = true;
+        gameState = (GameState) getIntent().getParcelableExtra("gameState");
+        if (gameState != null) {
+            score = gameState.getScore();
+            Log.d("gameState", String.valueOf(gameState.getScore()));
+            Log.d("size", String.valueOf(gameState.getEnemies().size()));
+            customGameView.setEnemies(gameState.getEnemies());
+            timeLeftInMillis = gameState.getTimeLeftInMillis();
+            xPosition = gameState.getCrosshairXPosition();
+            yPosition = gameState.getCrosshairYPosition();
+            gameStart();
+        }
+
         sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_FASTEST);
     }
 

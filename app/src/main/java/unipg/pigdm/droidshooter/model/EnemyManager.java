@@ -23,19 +23,24 @@ public class EnemyManager {
 
     private ArrayList<Enemy> enemiesList;
 
-    public EnemyManager(Context context) {
-        enemiesList = new ArrayList<>();
+    public EnemyManager(Context context, ArrayList<Enemy> enemies) {
+
         xMax = CustomGameView.getMaxWidth() - pxFromDp(44);
         yMax = CustomGameView.getMaxHeight() - pxFromDp(44);
         float density = CustomGameView.getDensity();
         enemyNumber = GameActivity.getEnemyNumber();
         enemySpeed = GameActivity.getEnemySpeed();
-        spawnEnemyList(enemiesList, context);
-        resizeEnemies(enemiesList, density);
-        for (Enemy enemy : enemiesList) {
-            enemy.setAlive(true);
-            this.setRandomSpawnEnemyX(enemy);
-            this.setRandomSpawnEnemyY(enemy);
+        if (enemies != null)
+            enemiesList = enemies;
+        else {
+            enemiesList = new ArrayList<>();
+            spawnEnemyList(enemiesList, context);
+            resizeEnemies(enemiesList, density);
+            for (Enemy enemy : enemiesList) {
+                enemy.setAlive(true);
+                this.setRandomSpawnEnemyX(enemy);
+                this.setRandomSpawnEnemyY(enemy);
+            }
         }
     }
 
@@ -174,15 +179,4 @@ public class EnemyManager {
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
-    /*
-    //From dp to px
-    public static int pxFromDp(float dp) {
-        return (int) (dp * CustomGameView.getDensity());
-    }
-
-    //From px to dp
-    public static int dpFromPx(float px) {
-        return (int) (px / CustomGameView.getDensity());
-    }
-    */
 }
