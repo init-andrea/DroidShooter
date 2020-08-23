@@ -1,5 +1,9 @@
 package unipg.pigdm.droidshooter.util;
 
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.graphics.RectF;
+
 import unipg.pigdm.droidshooter.view.CustomGameView;
 
 public class Utilities {
@@ -30,5 +34,16 @@ public class Utilities {
     //From px to dp
     public static int dpFromPx(float px) {
         return (int) (px / CustomGameView.getDensity());
+    }
+
+    //Resize bitmap image
+    public static Bitmap getResizedImage(Bitmap bitmap, int reqWidth, int reqHeight) {
+
+        Matrix matrix = new Matrix();
+        RectF src = new RectF(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        RectF dst = new RectF(0, 0, reqWidth, reqHeight);
+        matrix.setRectToRect(src, dst, Matrix.ScaleToFit.CENTER);
+
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 }

@@ -6,10 +6,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Build;
-import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewTreeObserver;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -20,7 +18,9 @@ import unipg.pigdm.droidshooter.R;
 import unipg.pigdm.droidshooter.controller.GameActivity;
 import unipg.pigdm.droidshooter.model.Enemy;
 import unipg.pigdm.droidshooter.model.EnemyManager;
+import unipg.pigdm.droidshooter.model.GameState;
 
+import static unipg.pigdm.droidshooter.util.Utilities.getResizedImage;
 import static unipg.pigdm.droidshooter.util.Utilities.pxFromDp;
 
 public class CustomGameView extends View {
@@ -29,12 +29,11 @@ public class CustomGameView extends View {
 
     private Bitmap crosshair;
     private Bitmap explosion;
-    private int score;
+    private static String enemiesState;
     private int aliveEnemies;
-    private long timeLeft = 2000;
-    private boolean gameEnded;
-    private boolean gameWon;
-    private Handler handler;
+    private Bitmap cupcake, iceSandwich, kitKat, oreo;
+    private int enemiesSize;
+    private boolean gameResumed;
     private ArrayList<Enemy> enemies = null;
 
     private EnemyManager enemyManager;
@@ -60,10 +59,6 @@ public class CustomGameView extends View {
         return height;
     }
 
-    public int getScore() {
-        return score;
-    }
-
     public CustomGameView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
 
@@ -83,30 +78,32 @@ public class CustomGameView extends View {
         init(attrs);
     }
 
+    public static void setGameState(GameState gameState) {
+        enemiesState = gameState.getEnemies();
+    }
+
     private void init(@Nullable AttributeSet set) {
         //TODO
-
         density = getResources().getDisplayMetrics().density;
         width = getResources().getDisplayMetrics().widthPixels;
         height = getResources().getDisplayMetrics().heightPixels;
-        enemyManager = new EnemyManager(this.getContext(), enemies);
-        enemies = new ArrayList<>(enemyManager.getEnemiesList());
-        aliveEnemies = enemyManager.getEnemiesList().size();
-        handler = new Handler();
-        crosshair = BitmapFactory.decodeResource(getResources(), R.drawable.red_crosshair);
-        explosion = BitmapFactory.decodeResource(getResources(), R.drawable.explosion);
 
-        //Calculate image size at the start of the view
-        getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        if (enemiesState != null) {
+            enemies = GameState.arrayListFromString(enemiesState);
+            //Log.d("enemiesState", enemiesState);
+            //Log.d("enemiesState2", enemies.toString());
+        }
 
-            @Override
-            public void onGlobalLayout() {
-                getViewTreeObserver().removeOnGlobalLayoutListener(this);
+        enemyManager = new EnemyManager(enemies);
+        if (!gameResumed)
+            enemies = new ArrayList<>(enemyManager.getEnemiesList());
+        //Log.d("enemiesCustomViewTime", enemies.toString());
 
-                crosshair = enemyManager.getResizedImage(crosshair, pxFromDp(CROSSHAIR_SIZE_DP), pxFromDp(CROSSHAIR_SIZE_DP));
-                explosion = enemyManager.getResizedImage(explosion, pxFromDp(44), pxFromDp(44));
-            }
-        });
+        enemiesSize = enemies.get(0).getSize();
+        aliveEnemies = enemyManager.getAliveEnemies();
+        loadBitmaps();
+        resizeBitmaps();
+
     }
 
     @Override
@@ -156,10 +153,24 @@ public class CustomGameView extends View {
 
 
         //loop through list of alive enemies to draw them
+        //Log.d("beforeDrawing",enemyManager.getEnemiesList().toString());
         for (Enemy enemy : enemyManager.getEnemiesList()) {
             if (enemy.isAlive()) {
                 enemyManager.moveEnemy(enemy);
-                canvas.drawBitmap(enemy.getImage(), enemy.getXPosition(), enemy.getYPosition(), null);
+                switch (enemy.getName()) {
+                    case "Cupcake":
+                        canvas.drawBitmap(cupcake, enemy.getXPosition(), enemy.getYPosition(), null);
+                        break;
+                    case "IceSandwich":
+                        canvas.drawBitmap(iceSandwich, enemy.getXPosition(), enemy.getYPosition(), null);
+                        break;
+                    case "KitKat":
+                        canvas.drawBitmap(kitKat, enemy.getXPosition(), enemy.getYPosition(), null);
+                        break;
+                    case "Oreo":
+                        canvas.drawBitmap(oreo, enemy.getXPosition(), enemy.getYPosition(), null);
+                        break;
+                }
             }
         }
 
@@ -169,6 +180,24 @@ public class CustomGameView extends View {
         this.invalidate();
     }
 
+    private void loadBitmaps() {
+        crosshair = BitmapFactory.decodeResource(getResources(), R.drawable.red_crosshair);
+        explosion = BitmapFactory.decodeResource(getResources(), R.drawable.explosion);
+        cupcake = BitmapFactory.decodeResource(getResources(), R.drawable.android_cupcake);
+        iceSandwich = BitmapFactory.decodeResource(getResources(), R.drawable.android_ice_cream_sandwich);
+        kitKat = BitmapFactory.decodeResource(getResources(), R.drawable.android_kitkat);
+        oreo = BitmapFactory.decodeResource(getResources(), R.drawable.android_oreo);
+    }
+
+    private void resizeBitmaps() {
+        crosshair = getResizedImage(crosshair, pxFromDp(CROSSHAIR_SIZE_DP), pxFromDp(CROSSHAIR_SIZE_DP));
+        explosion = getResizedImage(explosion, pxFromDp(44), pxFromDp(44));
+        cupcake = getResizedImage(cupcake, pxFromDp(enemiesSize), pxFromDp(enemiesSize));
+        iceSandwich = getResizedImage(iceSandwich, pxFromDp(enemiesSize), pxFromDp(enemiesSize));
+        kitKat = getResizedImage(kitKat, pxFromDp(enemiesSize), pxFromDp(enemiesSize));
+        oreo = getResizedImage(oreo, pxFromDp(enemiesSize), pxFromDp(enemiesSize));
+    }
+
     public ArrayList<Enemy> getEnemies() {
         return this.enemyManager.getEnemiesList();
     }
@@ -176,8 +205,14 @@ public class CustomGameView extends View {
     public void setEnemies(ArrayList<Enemy> enemies) {
         if (this.enemies != null)
             this.enemies.clear();
-        this.enemies = new ArrayList<>(enemies);
+        this.enemies = enemies;
+        gameResumed = true;
     }
+
+    public void setPause() {
+        gameResumed = false;
+    }
+
 
     /*
     private void explode(final Canvas canvas, final float x, final float y) {

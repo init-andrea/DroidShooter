@@ -3,7 +3,6 @@ package unipg.pigdm.droidshooter.controller;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcel;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -50,11 +49,10 @@ public class PauseScreenActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        gameState = (GameState) getIntent().getParcelableExtra("gameState");
-        if (gameState == null)
-            Log.d("null1", "null1");
-        Log.d("enemiesPaused", String.valueOf(gameState.getEnemies().size()));
-        Log.d("try", gameState.getScore() + " " + gameState.getTimeLeftInMillis());
+
+        gameState = getIntent().getParcelableExtra("gameState");
+        //Log.d("try", gameState.getScore() + " " + gameState.getTimeLeftInMillis());
+        //Log.d("pauseActivityStatePause", gameState.getEnemies());
 
         setContentView(R.layout.activity_pause);
 
@@ -64,8 +62,8 @@ public class PauseScreenActivity extends AppCompatActivity {
         resumeButton = findViewById(R.id.resumeButton);
         quitButton = findViewById(R.id.quitButton);
 
-        score.setText(String.valueOf(gameState.getScore()));
-        Log.d("score", (String) score.getText());
+        //score.setText(String.valueOf(gameState.getScore()));
+        //Log.d("score", (String) score.getText());
         //enemies = new ArrayList<>(gameState.getEnemies());
         //Log.d("pauseGameState", String.valueOf(enemies.size()));
 
@@ -84,11 +82,14 @@ public class PauseScreenActivity extends AppCompatActivity {
     public void resumeGame(View view) {
         Intent intent = new Intent(PauseScreenActivity.this, GameActivity.class);
         //Log.d("enemiesSizePause", String.valueOf(gameState.getEnemies().size()));
-        if (gameState == null)
-            Log.d("null2", "null2");
+        //if (gameState == null)
+        //Log.d("null2", "null2");
+        //Bundle b = new Bundle();
+        //b.putParcelable("gameState", gameState);
+        //Log.d("pauseScreenStateResume", gameState.getEnemies());
         intent.putExtra("gameState", gameState);
-        if (gameState == null)
-            Log.d("null3", "null3");
+        //if (gameState == null)
+        //Log.d("null3", "null3");
         startActivity(intent);
     }
 

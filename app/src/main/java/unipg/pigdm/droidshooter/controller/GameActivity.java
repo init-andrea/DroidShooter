@@ -10,7 +10,6 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
@@ -19,7 +18,6 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
-import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -94,30 +92,30 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
             gameWon = false;
         }
 
+
         if (gameResumed) {
             gameState = getIntent().getParcelableExtra("gameState");
+            assert gameState != null;
+            CustomGameView.setGameState(gameState);
+        }
+
+        setContentView(R.layout.activity_game);
+
+        customGameView = findViewById(R.id.customGameView);
+        if (gameResumed) {
+            //Bundle b = getIntent().getBundleExtra("bundle");
+            //gameState = getIntent().getParcelableExtra("gameState");
             if (gameState != null) {
+                //Log.d("gameActivityStateResume", gameState.getEnemies());
+                customGameView.setEnemies(GameState.arrayListFromString(gameState.getEnemies()));
                 score = gameState.getScore();
-                Log.d("gameState", String.valueOf(gameState.getScore()));
-                Log.d("size", String.valueOf(gameState.getEnemies().size()));
-                //customGameView.setEnemies(gameState.getEnemies());
+                //Log.d("gameStateScore", String.valueOf(gameState.getScore()));
                 timeLeftInMillis = gameState.getTimeLeftInMillis();
                 xPosition = gameState.getCrosshairXPosition();
                 yPosition = gameState.getCrosshairYPosition();
-                //gameStart();
             }
+            gameResumed = false;
         }
-
-        /*
-        if (!gameResumed) {
-            timeLeftInMillis = gameTimer;
-            score = prevScore = 0;
-        }
-        */
-
-        customGameView = new CustomGameView(this);
-
-        setContentView(R.layout.activity_game);
 
         scoreText = findViewById(R.id.scoreLabel);
         if (!showScore) {
@@ -140,9 +138,8 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        if (gameResumed)
-            gameResumed = false;
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        //Log.d("enemiesStartCoords", GameState.toString(customGameView.getEnemies()));
         gameStart();
     }
 
@@ -225,15 +222,24 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
 
     private void pauseGame(View view) {
         Intent intent = new Intent(GameActivity.this, PauseScreenActivity.class);
+        //Bundle b = new Bundle();
         countDownTimer.cancel();
-        //gameResumed = false;
         //intent.putExtra("score", score);
+        /*
         if (gameState != null && gameState.getEnemies() != null)
             gameState.getEnemies().clear();
-        gameState = new GameState(new ArrayList<>(customGameView.getEnemies()), score, timeLeftInMillis, xPosition, yPosition);
-        Log.d("getEnemies", String.valueOf(customGameView.getEnemies().size()));
-        Log.d("enemiesGameState", String.valueOf(gameState.getEnemies().size()));
+        */
+        gameState = new GameState(GameState.toString(customGameView.getEnemies()), score, timeLeftInMillis, xPosition, yPosition);
+        //Log.d("arraylistenemies", gameState.getEnemies());
+        //b.putParcelable("gameState", gameState);
+        //Log.d("getEnemies", String.valueOf(customGameView.getEnemies().size()));
+        //Log.d("gameActivityStatePause", gameState.getEnemies());
         intent.putExtra("gameState", gameState);
+        /*
+        GameState g1 = b.getParcelable("gameState");
+        Log.d("logging", g1.getEnemies().get(0).getName());
+        */
+        customGameView.setPause();
         startActivity(intent);
     }
 
@@ -328,8 +334,6 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     protected void onResume() {
         super.onResume();
         gameResumed = true;
-
-
         sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_FASTEST);
     }
 

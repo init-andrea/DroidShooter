@@ -42,16 +42,18 @@
         android:text="@string/start_button" />
 
     <Button
+        android:id="@+id/settingsButton"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:text="@string/settings_button" />
+
+    <Button
         android:id="@+id/quitButton"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_width="wrap_content"
         android:text="@string/quit_button" />
 
-    <Button android:id="@+id/settingsButton"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_width="wrap_content"
-        android:text="@string/settings_button" />
 
 </LinearLayout>

@@ -1,10 +1,5 @@
 package unipg.pigdm.droidshooter.model;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Matrix;
-import android.graphics.RectF;
-
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -23,19 +18,18 @@ public class EnemyManager {
 
     private ArrayList<Enemy> enemiesList;
 
-    public EnemyManager(Context context, ArrayList<Enemy> enemies) {
+    public EnemyManager(ArrayList<Enemy> enemies) {
 
         xMax = CustomGameView.getMaxWidth() - pxFromDp(44);
         yMax = CustomGameView.getMaxHeight() - pxFromDp(44);
-        float density = CustomGameView.getDensity();
         enemyNumber = GameActivity.getEnemyNumber();
         enemySpeed = GameActivity.getEnemySpeed();
+        generator = new Random();
         if (enemies != null)
             enemiesList = enemies;
         else {
             enemiesList = new ArrayList<>();
-            spawnEnemyList(enemiesList, context);
-            resizeEnemies(enemiesList, density);
+            spawnEnemyList(enemiesList);
             for (Enemy enemy : enemiesList) {
                 enemy.setAlive(true);
                 this.setRandomSpawnEnemyX(enemy);
@@ -46,6 +40,15 @@ public class EnemyManager {
 
     public ArrayList<Enemy> getEnemiesList() {
         return enemiesList;
+    }
+
+    public int getAliveEnemies() {
+        int i = 0;
+        for (Enemy enemy : this.enemiesList) {
+            if (enemy.isAlive())
+                i++;
+        }
+        return i;
     }
 
     public void moveEnemy(Enemy enemy) {
@@ -109,17 +112,17 @@ public class EnemyManager {
         enemy.setYPosition(currentY);
     }
 
-    private Enemy chooseEnemyType(int i, Context context) {
+    private Enemy chooseEnemyType(int i) {
         Enemy enemy = null;
 
         if (i == 0) {
-            enemy = new EnemyCupcake(context);
+            enemy = new EnemyCupcake();
         } else if (i == 1) {
-            enemy = new EnemyIceSandwich(context);
+            enemy = new EnemyIceSandwich();
         } else if (i == 2) {
-            enemy = new EnemyKitKat(context);
+            enemy = new EnemyKitKat();
         } else if (i == 3) {
-            enemy = new EnemyOreo(context);
+            enemy = new EnemyOreo();
         }
         return enemy;
     }
@@ -155,28 +158,21 @@ public class EnemyManager {
         }
     }
 
-    private void spawnEnemyList(ArrayList<Enemy> arrayList, Context context) {
-        generator = new Random();
+    private void spawnEnemyList(ArrayList<Enemy> arrayList) {
         for (int i = 0; i < enemyNumber; i++) {
-            arrayList.add(chooseEnemyType(generator.nextInt(4), context));
+            arrayList.add(chooseEnemyType(generator.nextInt(4)));
         }
     }
 
+    /*
     private void resizeEnemies(ArrayList<Enemy> arrayList, float density) {
         for (Enemy enemy : arrayList) {
             enemy.setImage(getResizedImage(enemy.getImage(), pxFromDp(enemy.getSize()), pxFromDp(enemy.getSize())));
         }
     }
 
-    //Resize bitmap image
-    public Bitmap getResizedImage(Bitmap bitmap, int reqWidth, int reqHeight) {
+     */
 
-        Matrix matrix = new Matrix();
-        RectF src = new RectF(0, 0, bitmap.getWidth(), bitmap.getHeight());
-        RectF dst = new RectF(0, 0, reqWidth, reqHeight);
-        matrix.setRectToRect(src, dst, Matrix.ScaleToFit.CENTER);
 
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-    }
 
 }
