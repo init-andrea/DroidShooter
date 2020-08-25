@@ -10,17 +10,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".controller.StartGameActivity">
+        <activity android:name=".view.uicontroller.StartGameActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".controller.GameActivity"></activity>
-        <activity android:name=".controller.PauseScreenActivity"></activity>
-        <activity android:name=".controller.EndScreenActivity"></activity>
-        <activity android:name=".controller.SettingsActivity">
+        <activity android:name=".view.uicontroller.GameActivity"></activity>
+        <activity android:name=".view.uicontroller.PauseScreenActivity"></activity>
+        <activity android:name=".view.uicontroller.EndScreenActivity"></activity>
+        <activity android:name=".view.uicontroller.SettingsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
             </intent-filter>

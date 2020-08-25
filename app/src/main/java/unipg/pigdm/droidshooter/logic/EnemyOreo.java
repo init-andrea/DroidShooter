@@ -1,4 +1,4 @@
-package unipg.pigdm.droidshooter.model;
+package unipg.pigdm.droidshooter.logic;
 
 public class EnemyOreo extends Enemy {
 

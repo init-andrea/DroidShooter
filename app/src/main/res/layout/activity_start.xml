@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:orientation="vertical"
-    tools:context="unipg.pigdm.droidshooter.controller.StartGameActivity">
+    tools:context="unipg.pigdm.droidshooter.view.uicontroller.StartGameActivity">
 
 
     <TextView

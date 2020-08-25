@@ -1,10 +1,10 @@
-package unipg.pigdm.droidshooter.model;
+package unipg.pigdm.droidshooter.logic;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-import unipg.pigdm.droidshooter.controller.GameActivity;
 import unipg.pigdm.droidshooter.view.CustomGameView;
+import unipg.pigdm.droidshooter.view.uicontroller.GameActivity;
 
 import static unipg.pigdm.droidshooter.util.Utilities.pxFromDp;
 

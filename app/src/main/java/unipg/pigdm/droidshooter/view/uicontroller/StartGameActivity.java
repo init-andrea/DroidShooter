@@ -1,4 +1,4 @@
-package unipg.pigdm.droidshooter.controller;
+package unipg.pigdm.droidshooter.view.uicontroller;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,8 +13,11 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import unipg.pigdm.droidshooter.R;
+import unipg.pigdm.droidshooter.sound.SoundPlayer;
 
 public class StartGameActivity extends AppCompatActivity {
+
+    private SoundPlayer soundPlayer;
 
     private View.OnClickListener startClickListener = new View.OnClickListener() {
 
@@ -43,6 +46,7 @@ public class StartGameActivity extends AppCompatActivity {
 
     };
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -56,6 +60,7 @@ public class StartGameActivity extends AppCompatActivity {
 
         highScoreText.setText(String.valueOf(prefs.getInt("highscore0", 0)));
 
+        soundPlayer = new SoundPlayer(this);
         Button startButton = findViewById(R.id.startButton);
         Button quitButton = findViewById(R.id.quitButton);
         Button settingsButton = findViewById(R.id.settingsButton);
@@ -70,18 +75,21 @@ public class StartGameActivity extends AppCompatActivity {
     }
 
     public void startGame(View view) {
+        soundPlayer.playStartButtonSound();
         Intent intent = new Intent(StartGameActivity.this, GameActivity.class);
         intent.putExtra("gameStarted", true);
         startActivity(intent);
     }
 
     public void quitGame() {
+        soundPlayer.playGenericButtonSound();
         finishAffinity();
         finish();
         System.exit(0);
     }
 
     public void openSettings(View view) {
+        soundPlayer.playGenericButtonSound();
         Intent intent = new Intent(StartGameActivity.this, SettingsActivity.class);
         startActivity(intent);
     }

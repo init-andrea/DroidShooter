@@ -1,4 +1,4 @@
-package unipg.pigdm.droidshooter.model;
+package unipg.pigdm.droidshooter.logic;
 
 import android.os.Parcel;
 import android.os.Parcelable;

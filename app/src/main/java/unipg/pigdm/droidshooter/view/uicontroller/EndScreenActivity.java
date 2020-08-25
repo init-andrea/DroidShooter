@@ -1,4 +1,4 @@
-package unipg.pigdm.droidshooter.controller;
+package unipg.pigdm.droidshooter.view.uicontroller;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,11 +9,13 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import unipg.pigdm.droidshooter.R;
+import unipg.pigdm.droidshooter.sound.SoundPlayer;
 
 public class EndScreenActivity extends AppCompatActivity {
 
     private TextView endText, endScore;
     private Button restartButton, menuButton, quitButton;
+    private SoundPlayer soundPlayer;
 
     private View.OnClickListener restartClickListener = new View.OnClickListener() {
 
@@ -48,6 +50,8 @@ public class EndScreenActivity extends AppCompatActivity {
         boolean gameWon = getIntent().getBooleanExtra("won_value", false);
         setContentView(R.layout.activity_end);
 
+        soundPlayer = new SoundPlayer(this);
+
         endScore = findViewById(R.id.endGameScore);
         endText = findViewById(R.id.endGameTextView);
         restartButton = findViewById(R.id.restartButton);
@@ -73,16 +77,19 @@ public class EndScreenActivity extends AppCompatActivity {
         //finishAffinity();
         Intent intent = new Intent(EndScreenActivity.this, GameActivity.class);
         intent.putExtra("gameRestarted", true);
+        soundPlayer.playStartButtonSound();
         startActivity(intent);
     }
 
     private void backToMenu(View view) {
         Intent intent = new Intent(EndScreenActivity.this, StartGameActivity.class);
-        //finishAffinity();
+        soundPlayer.playGenericButtonSound();
+        finishAffinity();
         startActivity(intent);
     }
 
     private void quitGame() {
+        soundPlayer.playGenericButtonSound();
         finishAffinity();
         finish();
         System.exit(0);

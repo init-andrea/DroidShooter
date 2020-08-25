@@ -1,4 +1,4 @@
-package unipg.pigdm.droidshooter.controller;
+package unipg.pigdm.droidshooter.view.uicontroller;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,8 +14,11 @@ import androidx.preference.EditTextPreference;
 import androidx.preference.PreferenceFragmentCompat;
 
 import unipg.pigdm.droidshooter.R;
+import unipg.pigdm.droidshooter.sound.SoundPlayer;
 
 public class SettingsActivity extends AppCompatActivity {
+
+    private SoundPlayer soundPlayer;
 
     private View.OnClickListener backToMenuClickListener = new View.OnClickListener() {
 
@@ -26,19 +29,6 @@ public class SettingsActivity extends AppCompatActivity {
 
     };
 
-    //prevents the user from inputting wrong values, only numbers are allowed for numeric settings
-    private static void setOnBindEditTextListener(EditTextPreference editTextPreference) {
-        if (editTextPreference != null) {
-            editTextPreference.setOnBindEditTextListener(
-                    new EditTextPreference.OnBindEditTextListener() {
-                        @Override
-                        public void onBindEditText(@NonNull EditText editText) {
-                            editText.setInputType(InputType.TYPE_CLASS_NUMBER);
-                        }
-                    });
-        }
-
-    }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
         @Override
@@ -56,10 +46,26 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
+    //prevents the user from inputting wrong values, only numbers are allowed for numeric settings
+    private static void setOnBindEditTextListener(EditTextPreference editTextPreference) {
+        if (editTextPreference != null) {
+            editTextPreference.setOnBindEditTextListener(
+                    new EditTextPreference.OnBindEditTextListener() {
+                        @Override
+                        public void onBindEditText(@NonNull EditText editText) {
+                            editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+                        }
+                    });
+        }
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        soundPlayer = new SoundPlayer(this);
 
         getSupportFragmentManager()
                 .beginTransaction()
@@ -77,6 +83,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void backToMenu() {
         Intent intent = new Intent(SettingsActivity.this, StartGameActivity.class);
+        soundPlayer.playGenericButtonSound();
         startActivity(intent);
     }
 

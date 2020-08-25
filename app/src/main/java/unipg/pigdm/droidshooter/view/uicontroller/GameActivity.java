@@ -1,4 +1,4 @@
-package unipg.pigdm.droidshooter.controller;
+package unipg.pigdm.droidshooter.view.uicontroller;
 
 import android.content.Context;
 import android.content.Intent;
@@ -22,7 +22,8 @@ import java.util.Locale;
 import java.util.Objects;
 
 import unipg.pigdm.droidshooter.R;
-import unipg.pigdm.droidshooter.model.GameState;
+import unipg.pigdm.droidshooter.logic.GameState;
+import unipg.pigdm.droidshooter.sound.SoundPlayer;
 import unipg.pigdm.droidshooter.util.Utilities;
 import unipg.pigdm.droidshooter.view.CustomGameView;
 
@@ -48,6 +49,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     private TextView textViewCountDown;
     private static boolean gameResumed = false;
 
+    private SoundPlayer soundPlayer;
     private SharedPreferences settingsPrefs;
     private SharedPreferences scorePrefs;
     SharedPreferences.Editor editor;
@@ -100,6 +102,8 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         }
 
         setContentView(R.layout.activity_game);
+
+        soundPlayer = new SoundPlayer(this);
 
         customGameView = findViewById(R.id.customGameView);
         if (gameResumed) {
@@ -222,24 +226,12 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
 
     private void pauseGame(View view) {
         Intent intent = new Intent(GameActivity.this, PauseScreenActivity.class);
-        //Bundle b = new Bundle();
         countDownTimer.cancel();
-        //intent.putExtra("score", score);
-        /*
-        if (gameState != null && gameState.getEnemies() != null)
-            gameState.getEnemies().clear();
-        */
         gameState = new GameState(GameState.toString(customGameView.getEnemies()), score, timeLeftInMillis, xPosition, yPosition);
-        //Log.d("arraylistenemies", gameState.getEnemies());
-        //b.putParcelable("gameState", gameState);
-        //Log.d("getEnemies", String.valueOf(customGameView.getEnemies().size()));
-        //Log.d("gameActivityStatePause", gameState.getEnemies());
         intent.putExtra("gameState", gameState);
-        /*
-        GameState g1 = b.getParcelable("gameState");
-        Log.d("logging", g1.getEnemies().get(0).getName());
-        */
         customGameView.setPause();
+        if (audioState)
+            soundPlayer.playGenericButtonSound();
         startActivity(intent);
     }
 
@@ -251,6 +243,12 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     private void endGame() {
         Intent intent = new Intent(this, EndScreenActivity.class);
         intent.putExtra("won_value", gameWon);
+        if (audioState) {
+            if (gameWon)
+                soundPlayer.playGameWonSound();
+            else
+                soundPlayer.playGameLostSound();
+        }
         startActivity(intent);
         resetGame();
     }

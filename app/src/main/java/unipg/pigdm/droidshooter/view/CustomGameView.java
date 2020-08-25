@@ -15,10 +15,11 @@ import androidx.annotation.RequiresApi;
 import java.util.ArrayList;
 
 import unipg.pigdm.droidshooter.R;
-import unipg.pigdm.droidshooter.controller.GameActivity;
-import unipg.pigdm.droidshooter.model.Enemy;
-import unipg.pigdm.droidshooter.model.EnemyManager;
-import unipg.pigdm.droidshooter.model.GameState;
+import unipg.pigdm.droidshooter.logic.Enemy;
+import unipg.pigdm.droidshooter.logic.EnemyManager;
+import unipg.pigdm.droidshooter.logic.GameState;
+import unipg.pigdm.droidshooter.sound.SoundPlayer;
+import unipg.pigdm.droidshooter.view.uicontroller.GameActivity;
 
 import static unipg.pigdm.droidshooter.util.Utilities.getResizedImage;
 import static unipg.pigdm.droidshooter.util.Utilities.pxFromDp;
@@ -35,6 +36,7 @@ public class CustomGameView extends View {
     private int enemiesSize;
     private boolean gameResumed;
     private ArrayList<Enemy> enemies = null;
+    private SoundPlayer soundPlayer;
 
     private EnemyManager enemyManager;
 
@@ -87,17 +89,15 @@ public class CustomGameView extends View {
         density = getResources().getDisplayMetrics().density;
         width = getResources().getDisplayMetrics().widthPixels;
         height = getResources().getDisplayMetrics().heightPixels;
+        soundPlayer = new SoundPlayer(this.getContext());
 
         if (enemiesState != null) {
             enemies = GameState.arrayListFromString(enemiesState);
-            //Log.d("enemiesState", enemiesState);
-            //Log.d("enemiesState2", enemies.toString());
         }
 
         enemyManager = new EnemyManager(enemies);
         if (!gameResumed)
             enemies = new ArrayList<>(enemyManager.getEnemiesList());
-        //Log.d("enemiesCustomViewTime", enemies.toString());
 
         enemiesSize = enemies.get(0).getSize();
         aliveEnemies = enemyManager.getAliveEnemies();
@@ -114,32 +114,10 @@ public class CustomGameView extends View {
         //check if enemies are hit
         for (final Enemy enemy : enemyManager.getEnemiesList()) {
             if (enemyManager.isHit(enemy, GameActivity.getCrosshairX(), GameActivity.getCrosshairY(), CROSSHAIR_SIZE_DP, density) && !enemy.isDead()) {
-                //explode(canvas, enemy.getXPosition(), enemy.getYPosition());
-                /*
-                CountDownTimer explosionAnimationTimer = new CountDownTimer(timeLeft, 100) {
-                    @Override
-                    public void onTick(long millisUntilFinished) {
-                        timeLeft = millisUntilFinished;
-                        canvas.drawBitmap(explosion, enemy.getXPosition(), enemy.getYPosition(), null);
-                    }
-
-                    @Override
-                    public void onFinish() {
-                        //enemyManager.getEnemiesList().remove(enemy);
-                    }
-                }.start();
-                */
                 canvas.drawBitmap(explosion, enemy.getXPosition(), enemy.getYPosition(), null);
+                soundPlayer.playHitSound();
                 enemy.setDead(true);
                 aliveEnemies --;
-                /*
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        enemy.setDead(true);
-                    }
-                }, 1500);
-                */
 
                 GameActivity.updateScore(enemy.getPoints());
             }

@@ -1,4 +1,4 @@
-package unipg.pigdm.droidshooter.controller;
+package unipg.pigdm.droidshooter.view.uicontroller;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,8 +13,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 
 import unipg.pigdm.droidshooter.R;
-import unipg.pigdm.droidshooter.model.Enemy;
-import unipg.pigdm.droidshooter.model.GameState;
+import unipg.pigdm.droidshooter.logic.Enemy;
+import unipg.pigdm.droidshooter.logic.GameState;
+import unipg.pigdm.droidshooter.sound.SoundPlayer;
 
 public class PauseScreenActivity extends AppCompatActivity {
     private TextView score;
@@ -24,6 +25,7 @@ public class PauseScreenActivity extends AppCompatActivity {
     private Parcel gameStateParcel;
     private GameState gameState;
     private ArrayList<Enemy> enemies;
+    private SoundPlayer soundPlayer;
 
     private static boolean audioState;
 
@@ -51,21 +53,15 @@ public class PauseScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         gameState = getIntent().getParcelableExtra("gameState");
-        //Log.d("try", gameState.getScore() + " " + gameState.getTimeLeftInMillis());
-        //Log.d("pauseActivityStatePause", gameState.getEnemies());
 
         setContentView(R.layout.activity_pause);
 
+        soundPlayer = new SoundPlayer(this);
         audioState = true;
         score = findViewById(R.id.scoreLabel);
         audioButton = findViewById(R.id.audioButton);
         resumeButton = findViewById(R.id.resumeButton);
         quitButton = findViewById(R.id.quitButton);
-
-        //score.setText(String.valueOf(gameState.getScore()));
-        //Log.d("score", (String) score.getText());
-        //enemies = new ArrayList<>(gameState.getEnemies());
-        //Log.d("pauseGameState", String.valueOf(enemies.size()));
 
         resumeButton.setOnClickListener(resumeClickListener);
         quitButton.setOnClickListener(quitClickListener);
@@ -73,6 +69,7 @@ public class PauseScreenActivity extends AppCompatActivity {
 
     public void changeAudioState(View view) {
         audioState = !audioState;
+        soundPlayer.playGenericButtonSound();
         if (audioState)
             audioButton.setImageResource(R.drawable.audio_on);
         else
@@ -81,20 +78,14 @@ public class PauseScreenActivity extends AppCompatActivity {
 
     public void resumeGame(View view) {
         Intent intent = new Intent(PauseScreenActivity.this, GameActivity.class);
-        //Log.d("enemiesSizePause", String.valueOf(gameState.getEnemies().size()));
-        //if (gameState == null)
-        //Log.d("null2", "null2");
-        //Bundle b = new Bundle();
-        //b.putParcelable("gameState", gameState);
-        //Log.d("pauseScreenStateResume", gameState.getEnemies());
         intent.putExtra("gameState", gameState);
-        //if (gameState == null)
-        //Log.d("null3", "null3");
+        soundPlayer.playGenericButtonSound();
         startActivity(intent);
     }
 
 
     public void quitGame(View view){
+        soundPlayer.playGenericButtonSound();
         finishAffinity();
         finish();
         System.exit(0);
