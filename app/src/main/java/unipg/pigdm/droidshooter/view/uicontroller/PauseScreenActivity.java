@@ -1,6 +1,7 @@
 package unipg.pigdm.droidshooter.view.uicontroller;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import java.util.ArrayList;
 
@@ -26,6 +28,8 @@ public class PauseScreenActivity extends AppCompatActivity {
     private GameState gameState;
     private ArrayList<Enemy> enemies;
     private SoundPlayer soundPlayer;
+    SharedPreferences.Editor editor;
+    private SharedPreferences prefs;
 
     private static boolean audioState;
 
@@ -47,29 +51,39 @@ public class PauseScreenActivity extends AppCompatActivity {
 
     };
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         gameState = getIntent().getParcelableExtra("gameState");
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         setContentView(R.layout.activity_pause);
 
         soundPlayer = new SoundPlayer(this);
-        audioState = true;
+        audioState = prefs.getBoolean("audio_state", true);
         score = findViewById(R.id.scoreLabel);
         audioButton = findViewById(R.id.audioButton);
         resumeButton = findViewById(R.id.resumeButton);
         quitButton = findViewById(R.id.quitButton);
+
+        setAudioStateButton();
 
         resumeButton.setOnClickListener(resumeClickListener);
         quitButton.setOnClickListener(quitClickListener);
     }
 
     public void changeAudioState(View view) {
+        if (audioState)
+            soundPlayer.playGenericButtonSound();
         audioState = !audioState;
-        soundPlayer.playGenericButtonSound();
+        editor = prefs.edit();
+        editor.putBoolean("audio_state", audioState);
+        editor.apply();
+        setAudioStateButton();
+    }
+
+    private void setAudioStateButton() {
         if (audioState)
             audioButton.setImageResource(R.drawable.audio_on);
         else
@@ -79,13 +93,15 @@ public class PauseScreenActivity extends AppCompatActivity {
     public void resumeGame(View view) {
         Intent intent = new Intent(PauseScreenActivity.this, GameActivity.class);
         intent.putExtra("gameState", gameState);
-        soundPlayer.playGenericButtonSound();
+        if (audioState)
+            soundPlayer.playGenericButtonSound();
         startActivity(intent);
     }
 
 
-    public void quitGame(View view){
-        soundPlayer.playGenericButtonSound();
+    public void quitGame(View view) {
+        if (audioState)
+            soundPlayer.playGenericButtonSound();
         finishAffinity();
         finish();
         System.exit(0);

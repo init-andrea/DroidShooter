@@ -1,12 +1,14 @@
 package unipg.pigdm.droidshooter.view.uicontroller;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import unipg.pigdm.droidshooter.R;
 import unipg.pigdm.droidshooter.sound.SoundPlayer;
@@ -16,6 +18,7 @@ public class EndScreenActivity extends AppCompatActivity {
     private TextView endText, endScore;
     private Button restartButton, menuButton, quitButton;
     private SoundPlayer soundPlayer;
+    private boolean audioState;
 
     private View.OnClickListener restartClickListener = new View.OnClickListener() {
 
@@ -50,6 +53,9 @@ public class EndScreenActivity extends AppCompatActivity {
         boolean gameWon = getIntent().getBooleanExtra("won_value", false);
         setContentView(R.layout.activity_end);
 
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        audioState = prefs.getBoolean("audio_state", true);
+
         soundPlayer = new SoundPlayer(this);
 
         endScore = findViewById(R.id.endGameScore);
@@ -77,19 +83,22 @@ public class EndScreenActivity extends AppCompatActivity {
         //finishAffinity();
         Intent intent = new Intent(EndScreenActivity.this, GameActivity.class);
         intent.putExtra("gameRestarted", true);
-        soundPlayer.playStartButtonSound();
+        if (audioState)
+            soundPlayer.playStartButtonSound();
         startActivity(intent);
     }
 
     private void backToMenu(View view) {
         Intent intent = new Intent(EndScreenActivity.this, StartGameActivity.class);
-        soundPlayer.playGenericButtonSound();
+        if (audioState)
+            soundPlayer.playGenericButtonSound();
         finishAffinity();
         startActivity(intent);
     }
 
     private void quitGame() {
-        soundPlayer.playGenericButtonSound();
+        if (audioState)
+            soundPlayer.playGenericButtonSound();
         finishAffinity();
         finish();
         System.exit(0);

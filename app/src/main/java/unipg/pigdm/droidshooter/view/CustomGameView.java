@@ -1,6 +1,7 @@
 package unipg.pigdm.droidshooter.view;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -11,6 +12,7 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.preference.PreferenceManager;
 
 import java.util.ArrayList;
 
@@ -37,6 +39,8 @@ public class CustomGameView extends View {
     private boolean gameResumed;
     private ArrayList<Enemy> enemies = null;
     private SoundPlayer soundPlayer;
+    private SharedPreferences prefs;
+    private boolean audioState;
 
     private EnemyManager enemyManager;
 
@@ -90,6 +94,8 @@ public class CustomGameView extends View {
         width = getResources().getDisplayMetrics().widthPixels;
         height = getResources().getDisplayMetrics().heightPixels;
         soundPlayer = new SoundPlayer(this.getContext());
+        prefs = PreferenceManager.getDefaultSharedPreferences(this.getContext());
+        audioState = prefs.getBoolean("audio_state", true);
 
         if (enemiesState != null) {
             enemies = GameState.arrayListFromString(enemiesState);
@@ -115,9 +121,10 @@ public class CustomGameView extends View {
         for (final Enemy enemy : enemyManager.getEnemiesList()) {
             if (enemyManager.isHit(enemy, GameActivity.getCrosshairX(), GameActivity.getCrosshairY(), CROSSHAIR_SIZE_DP, density) && !enemy.isDead()) {
                 canvas.drawBitmap(explosion, enemy.getXPosition(), enemy.getYPosition(), null);
-                soundPlayer.playHitSound();
+                if (audioState)
+                    soundPlayer.playHitSound();
                 enemy.setDead(true);
-                aliveEnemies --;
+                aliveEnemies--;
 
                 GameActivity.updateScore(enemy.getPoints());
             }

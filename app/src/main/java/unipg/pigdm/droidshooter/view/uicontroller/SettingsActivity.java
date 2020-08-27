@@ -1,6 +1,7 @@
 package unipg.pigdm.droidshooter.view.uicontroller;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
@@ -12,6 +13,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.EditTextPreference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
 
 import unipg.pigdm.droidshooter.R;
 import unipg.pigdm.droidshooter.sound.SoundPlayer;
@@ -19,6 +21,7 @@ import unipg.pigdm.droidshooter.sound.SoundPlayer;
 public class SettingsActivity extends AppCompatActivity {
 
     private SoundPlayer soundPlayer;
+    private boolean audioState;
 
     private View.OnClickListener backToMenuClickListener = new View.OnClickListener() {
 
@@ -66,6 +69,8 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         soundPlayer = new SoundPlayer(this);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        audioState = prefs.getBoolean("audio_state", true);
 
         getSupportFragmentManager()
                 .beginTransaction()
@@ -83,7 +88,8 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void backToMenu() {
         Intent intent = new Intent(SettingsActivity.this, StartGameActivity.class);
-        soundPlayer.playGenericButtonSound();
+        if (audioState)
+            soundPlayer.playGenericButtonSound();
         startActivity(intent);
     }
 

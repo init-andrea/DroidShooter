@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import unipg.pigdm.droidshooter.R;
 import unipg.pigdm.droidshooter.sound.SoundPlayer;
@@ -18,6 +19,7 @@ import unipg.pigdm.droidshooter.sound.SoundPlayer;
 public class StartGameActivity extends AppCompatActivity {
 
     private SoundPlayer soundPlayer;
+    private boolean audioState;
 
     private View.OnClickListener startClickListener = new View.OnClickListener() {
 
@@ -59,6 +61,8 @@ public class StartGameActivity extends AppCompatActivity {
         TextView highScoreText = findViewById(R.id.highScore);
 
         highScoreText.setText(String.valueOf(prefs.getInt("highscore0", 0)));
+        SharedPreferences audioPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        audioState = audioPrefs.getBoolean("audio_state", true);
 
         soundPlayer = new SoundPlayer(this);
         Button startButton = findViewById(R.id.startButton);
@@ -75,21 +79,24 @@ public class StartGameActivity extends AppCompatActivity {
     }
 
     public void startGame(View view) {
-        soundPlayer.playStartButtonSound();
+        if (audioState)
+            soundPlayer.playStartButtonSound();
         Intent intent = new Intent(StartGameActivity.this, GameActivity.class);
         intent.putExtra("gameStarted", true);
         startActivity(intent);
     }
 
     public void quitGame() {
-        soundPlayer.playGenericButtonSound();
+        if (audioState)
+            soundPlayer.playGenericButtonSound();
         finishAffinity();
         finish();
         System.exit(0);
     }
 
     public void openSettings(View view) {
-        soundPlayer.playGenericButtonSound();
+        if (audioState)
+            soundPlayer.playGenericButtonSound();
         Intent intent = new Intent(StartGameActivity.this, SettingsActivity.class);
         startActivity(intent);
     }

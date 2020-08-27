@@ -106,18 +106,12 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         soundPlayer = new SoundPlayer(this);
 
         customGameView = findViewById(R.id.customGameView);
-        if (gameResumed) {
-            //Bundle b = getIntent().getBundleExtra("bundle");
-            //gameState = getIntent().getParcelableExtra("gameState");
-            if (gameState != null) {
-                //Log.d("gameActivityStateResume", gameState.getEnemies());
-                customGameView.setEnemies(GameState.arrayListFromString(gameState.getEnemies()));
-                score = gameState.getScore();
-                //Log.d("gameStateScore", String.valueOf(gameState.getScore()));
-                timeLeftInMillis = gameState.getTimeLeftInMillis();
-                xPosition = gameState.getCrosshairXPosition();
-                yPosition = gameState.getCrosshairYPosition();
-            }
+        if (gameResumed & gameState != null) {
+            customGameView.setEnemies(GameState.arrayListFromString(gameState.getEnemies()));
+            score = gameState.getScore();
+            timeLeftInMillis = gameState.getTimeLeftInMillis();
+            xPosition = gameState.getCrosshairXPosition();
+            yPosition = gameState.getCrosshairYPosition();
             gameResumed = false;
         }
 
@@ -143,7 +137,6 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        //Log.d("enemiesStartCoords", GameState.toString(customGameView.getEnemies()));
         gameStart();
     }
 
