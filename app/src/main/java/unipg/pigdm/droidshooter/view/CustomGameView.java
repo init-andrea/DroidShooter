@@ -198,23 +198,4 @@ public class CustomGameView extends View {
         gameResumed = false;
     }
 
-
-    /*
-    private void explode(final Canvas canvas, final float x, final float y) {
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        canvas.drawBitmap(explosion, x, y, null);
-                    }
-                });
-            }
-        }, 0, 200);
-        //invalidate();
-    }
-    */
-
 }

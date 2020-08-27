@@ -80,7 +80,7 @@ public class EndScreenActivity extends AppCompatActivity {
     }
 
     private void restartGame(View view) {
-        //finishAffinity();
+        finishAffinity();
         Intent intent = new Intent(EndScreenActivity.this, GameActivity.class);
         intent.putExtra("gameRestarted", true);
         if (audioState)
