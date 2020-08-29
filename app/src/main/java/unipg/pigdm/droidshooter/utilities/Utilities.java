@@ -1,4 +1,4 @@
-package unipg.pigdm.droidshooter.util;
+package unipg.pigdm.droidshooter.utilities;
 
 import android.graphics.Bitmap;
 import android.graphics.Matrix;

@@ -23,8 +23,8 @@ import unipg.pigdm.droidshooter.logic.GameState;
 import unipg.pigdm.droidshooter.sound.SoundPlayer;
 import unipg.pigdm.droidshooter.view.uicontroller.GameActivity;
 
-import static unipg.pigdm.droidshooter.util.Utilities.getResizedImage;
-import static unipg.pigdm.droidshooter.util.Utilities.pxFromDp;
+import static unipg.pigdm.droidshooter.utilities.Utilities.getResizedImage;
+import static unipg.pigdm.droidshooter.utilities.Utilities.pxFromDp;
 
 public class CustomGameView extends View {
 

@@ -23,36 +23,53 @@ import java.util.Objects;
 
 import unipg.pigdm.droidshooter.R;
 import unipg.pigdm.droidshooter.logic.GameState;
+import unipg.pigdm.droidshooter.logic.PlayerManager;
 import unipg.pigdm.droidshooter.sound.SoundPlayer;
-import unipg.pigdm.droidshooter.util.Utilities;
+import unipg.pigdm.droidshooter.utilities.Utilities;
 import unipg.pigdm.droidshooter.view.CustomGameView;
 
-import static unipg.pigdm.droidshooter.util.Utilities.pxFromDp;
+import static unipg.pigdm.droidshooter.utilities.Utilities.pxFromDp;
 
 public class GameActivity extends AppCompatActivity implements SensorEventListener {
 
-    private static final int TOTAL_HIGHSCORES_NUMBER = 9; // from 0 to 9, 10 total highscores
+    //Default values
+    private static final int TOTAL_HIGHSCORES_NUMBER = 9; // from 0 to 9, 10 total highscores are saved
     private static final int DEFAULT_ENEMIES_NUMBER = 5;
     private static final float DEFAULT_ENEMIES_SPEED = 5;
     private static final long DEFAULT_GAME_TIMER = 30;
 
-
-    private static int score;
-    private int prevScore;
-    private static final float FRAME_TIME = 0.006f;
+    //Values from preferences
     private static float enemySpeed;
     private static int enemyNumber;
     private static boolean showScore;
     private static boolean audioState;
     private static long gameTimer;
+
+    //For the UI
+    private static int score;
+    private int prevScore;
+
     private TextView scoreText;
     private TextView textViewCountDown;
     private static boolean gameResumed = false;
-
-    private SoundPlayer soundPlayer;
+    //Crosshair
+    private static float xPosition = 0.0f;
     private SharedPreferences settingsPrefs;
     private SharedPreferences scorePrefs;
     SharedPreferences.Editor editor;
+    private static float yPosition = 0.0f;
+    private long timeLeftInMillis;
+    private CustomGameView customGameView;
+    private static boolean gameWon;
+    private GameState gameState;
+    //Sound
+    private SoundPlayer soundPlayer;
+    //State of the game
+    private CountDownTimer countDownTimer;
+    private PlayerManager playerManager;
+
+    //Sensor manager
+    private SensorManager sensorManager = null;
 
     private View.OnClickListener pauseGameListener = new View.OnClickListener() {
 
@@ -63,22 +80,6 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
 
     };
 
-    private CountDownTimer countDownTimer;
-    private long timeLeftInMillis;
-
-    private static boolean gameEnded;
-    private static boolean gameWon;
-    private GameState gameState;
-
-    //Crosshair movement
-    private static float xPosition, xAcceleration, xVelocity = 0.0f;
-    private static float yPosition, yAcceleration, yVelocity = 0.0f;
-    private static float xMax, yMax;
-    private CustomGameView customGameView;
-
-    //Sensor manager
-    private SensorManager sensorManager = null;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,10 +88,11 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         scorePrefs = this.getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
         getPreferences();
 
+        playerManager = new PlayerManager();
+
         if (getIntent().getBooleanExtra("gameStarted", false) || getIntent().getBooleanExtra("gameRestarted", false)) {
             timeLeftInMillis = gameTimer;
             score = prevScore = 0;
-            gameEnded = false;
             gameWon = false;
         }
 
@@ -110,8 +112,8 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
             customGameView.setEnemies(GameState.arrayListFromString(gameState.getEnemies()));
             score = gameState.getScore();
             timeLeftInMillis = gameState.getTimeLeftInMillis();
-            xPosition = gameState.getCrosshairXPosition();
-            yPosition = gameState.getCrosshairYPosition();
+            playerManager.setXPosition(gameState.getCrosshairXPosition());
+            playerManager.setYPosition(gameState.getCrosshairYPosition());
             gameResumed = false;
         }
 
@@ -125,8 +127,8 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         textViewCountDown = findViewById(R.id.timerLabel);
         ImageButton pauseButton = findViewById(R.id.pauseButton);
 
-        xMax = CustomGameView.getMaxWidth() - (float) pxFromDp(66);
-        yMax = CustomGameView.getMaxHeight() - (float) pxFromDp(66);
+        playerManager.setXMax(CustomGameView.getMaxWidth() - (float) pxFromDp(66));
+        playerManager.setYMax(CustomGameView.getMaxHeight() - (float) pxFromDp(66));
 
         pauseButton.setOnClickListener(pauseGameListener);
 
@@ -139,14 +141,6 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         gameStart();
     }
-
-    /*
-    public void explode(float x, float y) {
-        explosionImage.setX(x);
-        explosionImage.setY(y);
-        explosionAnimation.start();
-    }
-    */
 
     private void gameStart() {
         gameWon = false;
@@ -169,7 +163,6 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
 
             @Override
             public void onFinish() {
-                gameEnded = true;
                 updateHighScores();
                 endGame();
             }
@@ -197,7 +190,6 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     }
 
     public static void updateScore(int points) {
-        //TODO
         score += points;
     }
 
@@ -210,7 +202,6 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
                 possibleHighScore = score;
                 possibleHighScoreIndex = i;
             }
-            //Log.d("highscore" + i, String.valueOf(scorePrefs.getInt("highscore" + i, 0)));
         }
         if (possibleHighScoreIndex != TOTAL_HIGHSCORES_NUMBER + 1)
             editor.putInt("highscore" + possibleHighScoreIndex, possibleHighScore);
@@ -230,7 +221,6 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
 
     public static void winGame() {
         gameWon = true;
-        gameEnded = true;
     }
 
     private void endGame() {
@@ -247,7 +237,8 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     }
 
     private void resetGame() {
-        xPosition = xAcceleration = xVelocity = yPosition = yAcceleration = yVelocity = 0.0f;
+        xPosition = yPosition = 0.0f;
+        playerManager.resetCrosshair();
         getPreferences();
         gameResumed = false;
     }
@@ -255,43 +246,14 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            xAcceleration = sensorEvent.values[0];
-            yAcceleration = sensorEvent.values[1];
+            playerManager.calculatePosition(sensorEvent.values[0], sensorEvent.values[1]);
         }
 
-        //Calculate new speed
-        xVelocity += (xAcceleration * FRAME_TIME);
-        yVelocity += (yAcceleration * FRAME_TIME);
-
-        //Calculate distance travelled in the time frame
-        float xS = xVelocity + (xAcceleration / 2.0f) * FRAME_TIME * FRAME_TIME;
-        float yS = yVelocity + (yAcceleration / 2.0f) * FRAME_TIME * FRAME_TIME;
-
-        //Add to position negative for x value because sensor reads the opposite of what we want
-        xPosition -= xS;
-        yPosition += yS;
-
-        checkMaxXY();
+        xPosition = playerManager.getXPosition();
+        yPosition = playerManager.getYPosition();
 
     }
 
-    //Check if X or Y coordinates exceed the screen size and if the crosshair is on a side resets the velocity
-    private void checkMaxXY() {
-        if (xPosition > xMax) {
-            xPosition = xMax;
-            xVelocity = 0;
-        } else if (xPosition < 0) {
-            xPosition = 0;
-            xVelocity = 0;
-        }
-        if (yPosition > yMax) {
-            yPosition = yMax;
-            yVelocity = 0;
-        } else if (yPosition < 0) {
-            yPosition = 0;
-            yVelocity = 0;
-        }
-    }
 
     public static float getCrosshairX() {
         return xPosition;

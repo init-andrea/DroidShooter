@@ -6,7 +6,7 @@ import java.util.Random;
 import unipg.pigdm.droidshooter.view.CustomGameView;
 import unipg.pigdm.droidshooter.view.uicontroller.GameActivity;
 
-import static unipg.pigdm.droidshooter.util.Utilities.pxFromDp;
+import static unipg.pigdm.droidshooter.utilities.Utilities.pxFromDp;
 
 public class EnemyManager {
 
