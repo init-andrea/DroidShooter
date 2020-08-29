@@ -6,6 +6,10 @@ import android.os.Parcelable;
 public class Enemy implements Parcelable {
 
     private String name;
+
+    private float yPosition;
+    private float xPosition;
+    private int enemySizeDp = 44;
     public static final Creator<Enemy> CREATOR = new Creator<Enemy>() {
         @Override
         public Enemy createFromParcel(Parcel in) {
@@ -17,10 +21,6 @@ public class Enemy implements Parcelable {
             return new Enemy[size];
         }
     };
-    private float yPosition;
-    //private Bitmap image;
-    private float xPosition;
-    private int enemySizeDp = 44;
 
     //[screen side (0 top, 1 right, 2 bottom, 3 left), px on the side]
     private int[] movementInfo = new int[2];
@@ -32,9 +32,6 @@ public class Enemy implements Parcelable {
     protected Enemy() {
         //Constructor, does nothing
     }
-
-    //private float killTime;
-    //private float escapeTime;
     private int points;
 
     protected Enemy(Parcel in) {
@@ -57,17 +54,6 @@ public class Enemy implements Parcelable {
         this.name = name;
     }
 
-    /*
-    public Bitmap getImage() {
-        return image;
-    }
-
-    public void setImage(Bitmap image) {
-        this.image = image;
-    }
-
-     */
-
     public float getXPosition() {
         return xPosition;
     }
@@ -83,24 +69,6 @@ public class Enemy implements Parcelable {
     public void setYPosition(float yPosition) {
         this.yPosition = yPosition;
     }
-
-    /*
-    public float getKillTime() {
-        return killTime;
-    }
-
-    public void setKillTime(float killTime) {
-        this.killTime = killTime;
-    }
-
-    public float getEscapeTime() {
-        return escapeTime;
-    }
-
-    public void setEscapeTime(float escapeTime) {
-        this.escapeTime = escapeTime;
-    }
-    */
 
     public void setPoints(int points) {
         this.points = points;

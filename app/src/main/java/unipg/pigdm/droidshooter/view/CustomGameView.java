@@ -21,6 +21,7 @@ import unipg.pigdm.droidshooter.logic.Enemy;
 import unipg.pigdm.droidshooter.logic.EnemyManager;
 import unipg.pigdm.droidshooter.logic.GameState;
 import unipg.pigdm.droidshooter.sound.SoundPlayer;
+import unipg.pigdm.droidshooter.utilities.Utilities;
 import unipg.pigdm.droidshooter.view.uicontroller.GameActivity;
 
 import static unipg.pigdm.droidshooter.utilities.Utilities.getResizedImage;
@@ -98,7 +99,7 @@ public class CustomGameView extends View {
         audioState = prefs.getBoolean("audio_state", true);
 
         if (enemiesState != null) {
-            enemies = GameState.arrayListFromString(enemiesState);
+            enemies = Utilities.arrayListFromString(enemiesState);
         }
 
         enemyManager = new EnemyManager(enemies);
@@ -119,7 +120,7 @@ public class CustomGameView extends View {
 
         //check if enemies are hit
         for (final Enemy enemy : enemyManager.getEnemiesList()) {
-            if (enemyManager.isHit(enemy, GameActivity.getCrosshairX(), GameActivity.getCrosshairY(), CROSSHAIR_SIZE_DP, density) && !enemy.isDead()) {
+            if (enemyManager.isHit(enemy, GameActivity.getCrosshairX(), GameActivity.getCrosshairY(), CROSSHAIR_SIZE_DP) && !enemy.isDead()) {
                 canvas.drawBitmap(explosion, enemy.getXPosition(), enemy.getYPosition(), null);
                 if (audioState)
                     soundPlayer.playHitSound();
@@ -130,15 +131,12 @@ public class CustomGameView extends View {
             }
         }
 
-        //TODO add list of dead enemies to draw the image on screen with countdowntimer(?)
-
         if (aliveEnemies == 0) {
             GameActivity.winGame();
         }
 
 
         //loop through list of alive enemies to draw them
-        //Log.d("beforeDrawing",enemyManager.getEnemiesList().toString());
         for (Enemy enemy : enemyManager.getEnemiesList()) {
             if (enemy.isAlive()) {
                 enemyManager.moveEnemy(enemy);

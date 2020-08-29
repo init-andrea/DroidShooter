@@ -65,9 +65,7 @@ public class PlayerManager {
         this.yMax = yMax;
     }
 
-    public float[] calculatePosition(float xAcceleration, float yAcceleration) { // l'istanza salva xpos xvelocity quindi devo passare solo l'accelerazione
-
-        float[] position = new float[2];
+    public void calculatePosition(float xAcceleration, float yAcceleration) {
 
         //Calculate new speed
         xVelocity += (xAcceleration * TIMEFRAME);
@@ -81,16 +79,12 @@ public class PlayerManager {
         xPosition -= xS;
         yPosition += yS;
 
-        checkMaxXY();
+        checkVelocityAndMaxXY();
 
-        position[0] = xPosition;
-        position[1] = yPosition;
-
-        return position;
     }
 
     //Check if X or Y coordinates exceed the screen size and if the crosshair is on a side resets the velocity
-    private void checkMaxXY() {
+    private void checkVelocityAndMaxXY() {
         if (xPosition > xMax) {
             xPosition = xMax;
             xVelocity = 0;

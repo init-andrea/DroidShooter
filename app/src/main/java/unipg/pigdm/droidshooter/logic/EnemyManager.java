@@ -32,8 +32,7 @@ public class EnemyManager {
             spawnEnemyList(enemiesList);
             for (Enemy enemy : enemiesList) {
                 enemy.setAlive(true);
-                this.setRandomSpawnEnemyX(enemy);
-                this.setRandomSpawnEnemyY(enemy);
+                this.setRandomEnemySpawn(enemy);
             }
         }
     }
@@ -112,6 +111,12 @@ public class EnemyManager {
         enemy.setYPosition(currentY);
     }
 
+    private void spawnEnemyList(ArrayList<Enemy> arrayList) {
+        for (int i = 0; i < enemyNumber; i++) {
+            arrayList.add(chooseEnemyType(generator.nextInt(4)));
+        }
+    }
+
     private Enemy chooseEnemyType(int i) {
         Enemy enemy = null;
 
@@ -127,52 +132,23 @@ public class EnemyManager {
         return enemy;
     }
 
-    public void setRandomSpawnEnemyX(Enemy enemy) {
-        enemy.setXPosition(generator.nextInt((int)xMax));
+    public void setRandomEnemySpawn(Enemy enemy) {
+        enemy.setXPosition(generator.nextInt((int) xMax));
+        enemy.setYPosition(generator.nextInt((int) yMax));
     }
 
-    public void setRandomSpawnEnemyY(Enemy enemy) {
-        enemy.setYPosition(generator.nextInt((int)yMax));
-    }
-
-    public boolean isHit(Enemy e, float x, float y, int CROSSHAIR_SIZE_DP, float density) {
-            if (   (e.getXPosition()+pxFromDp(e.getSize())) < (x+pxFromDp(CROSSHAIR_SIZE_DP))
-                    && (e.getXPosition()) > (x)
-                    && (e.getYPosition()) > (y)
-                    && (e.getYPosition()+pxFromDp(e.getSize())) < (y+pxFromDp(CROSSHAIR_SIZE_DP))
-            ) {
-                e.setAlive(false);
-                return true;
-            }
-            else {
-                return false;
-            }
-
-    }
-
-    public void destroyDeadEnemies(ArrayList<Enemy> enemies) {
-        for (Enemy enemy : enemies) {
-            if (enemy.isDead()) {
-                enemies.remove(enemy);
-            }
+    public boolean isHit(Enemy e, float x, float y, int CROSSHAIR_SIZE_DP) {
+        if ((e.getXPosition() + pxFromDp(e.getSize())) < (x + pxFromDp(CROSSHAIR_SIZE_DP))
+                && (e.getXPosition()) > (x)
+                && (e.getYPosition()) > (y)
+                && (e.getYPosition() + pxFromDp(e.getSize())) < (y + pxFromDp(CROSSHAIR_SIZE_DP))
+        ) {
+            e.setAlive(false);
+            return true;
+        } else {
+            return false;
         }
+
     }
-
-    private void spawnEnemyList(ArrayList<Enemy> arrayList) {
-        for (int i = 0; i < enemyNumber; i++) {
-            arrayList.add(chooseEnemyType(generator.nextInt(4)));
-        }
-    }
-
-    /*
-    private void resizeEnemies(ArrayList<Enemy> arrayList, float density) {
-        for (Enemy enemy : arrayList) {
-            enemy.setImage(getResizedImage(enemy.getImage(), pxFromDp(enemy.getSize()), pxFromDp(enemy.getSize())));
-        }
-    }
-
-     */
-
-
 
 }

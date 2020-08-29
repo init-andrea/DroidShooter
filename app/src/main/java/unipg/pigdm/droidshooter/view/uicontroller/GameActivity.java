@@ -109,7 +109,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
 
         customGameView = findViewById(R.id.customGameView);
         if (gameResumed & gameState != null) {
-            customGameView.setEnemies(GameState.arrayListFromString(gameState.getEnemies()));
+            customGameView.setEnemies(Utilities.arrayListFromString(gameState.getEnemies()));
             score = gameState.getScore();
             timeLeftInMillis = gameState.getTimeLeftInMillis();
             playerManager.setXPosition(gameState.getCrosshairXPosition());
@@ -211,7 +211,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
     private void pauseGame(View view) {
         Intent intent = new Intent(GameActivity.this, PauseScreenActivity.class);
         countDownTimer.cancel();
-        gameState = new GameState(GameState.toString(customGameView.getEnemies()), score, timeLeftInMillis, xPosition, yPosition);
+        gameState = new GameState(customGameView.getEnemies(), score, timeLeftInMillis, xPosition, yPosition);
         intent.putExtra("gameState", gameState);
         customGameView.setPause();
         if (audioState)

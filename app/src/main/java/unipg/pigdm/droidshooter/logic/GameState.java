@@ -4,7 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class GameState implements Parcelable {
 
@@ -25,8 +24,8 @@ public class GameState implements Parcelable {
     private long timeLeftInMillis;
     private float crosshairXPosition, crosshairYPosition;
 
-    public GameState(String enemiesState, int score, long timeLeftInMillis, float crosshairXPosition, float crosshairYPosition) {
-        this.enemiesState = enemiesState;
+    public GameState(ArrayList<Enemy> enemies, int score, long timeLeftInMillis, float crosshairXPosition, float crosshairYPosition) {
+        this.enemiesState = toString(enemies);
         this.score = score;
         this.timeLeftInMillis = timeLeftInMillis;
         this.crosshairXPosition = crosshairXPosition;
@@ -41,53 +40,8 @@ public class GameState implements Parcelable {
         crosshairYPosition = in.readFloat();
     }
 
-    public static ArrayList<Enemy> arrayListFromString(String enemies) {
-        String[] tokens = enemies.split("name:");
-        tokens = Arrays.copyOfRange(tokens, 1, tokens.length);
-        ArrayList<Enemy> enemiesList = new ArrayList<>();
-        //Log.d("token0", tokens[0]);
-        for (String token : tokens) {
-            int[] movementInfos = new int[2];
-            String[] singleEnemy = token.split(" ");
-            switch (singleEnemy[0]) {
-                case "Cupcake":
-                    enemiesList.add(new EnemyCupcake());
-                    break;
-                case "IceSandwich":
-                    enemiesList.add(new EnemyIceSandwich());
-                    break;
-                case "KitKat":
-                    enemiesList.add(new EnemyKitKat());
-                    break;
-                case "Oreo":
-                    enemiesList.add(new EnemyOreo());
-                    break;
-            }
-            enemiesList.get(enemiesList.size() - 1).setXPosition(Float.parseFloat(singleEnemy[1].substring(2)));
-            enemiesList.get(enemiesList.size() - 1).setYPosition(Float.parseFloat(singleEnemy[2].substring(2)));
-            enemiesList.get(enemiesList.size() - 1).setAlive(singleEnemy[3].substring(2).equals("t"));
-            enemiesList.get(enemiesList.size() - 1).setDead(singleEnemy[4].substring(2).equals("t"));
-            movementInfos[0] = Integer.parseInt(singleEnemy[5].substring(2));
-            movementInfos[1] = Integer.parseInt(singleEnemy[6].substring(2));
-            enemiesList.get(enemiesList.size() - 1).setMovementInfo(movementInfos);
-            enemiesList.get(enemiesList.size() - 1).setMoving(Boolean.parseBoolean(singleEnemy[7].substring(2)));
-
-        }
-        /*
-        Log.d("tokens", Arrays.toString(tokens));
-        Log.d("tokensSize", String.valueOf(tokens.length));
-        Log.d("newToken", Arrays.toString(Arrays.copyOfRange(tokens, 1, tokens.length)));
-        Log.d("token1SplitX", tokens[1].split(" ")[2].substring(2));
-        */
-        return enemiesList;
-    }
-
     public int getScore() {
         return score;
-    }
-
-    public void setScore(int score) {
-        this.score = score;
     }
 
     public long getTimeLeftInMillis() {
@@ -102,7 +56,7 @@ public class GameState implements Parcelable {
         return crosshairYPosition;
     }
 
-    public static String toString(ArrayList<Enemy> enemies) {
+    private String toString(ArrayList<Enemy> enemies) {
         StringBuilder sb = new StringBuilder();
         for (Enemy enemy : enemies) {
             sb.append(enemy.toString());
