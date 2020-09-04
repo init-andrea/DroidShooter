@@ -159,7 +159,6 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
 
     private void gameStart() {
         gameWon = false;
-        //TODO
         countDownTimer = new CountDownTimer(timeLeftInMillis, 200) {
             @Override
             public void onTick(long millisUntilFinished) {

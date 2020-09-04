@@ -3,7 +3,6 @@ package unipg.pigdm.droidshooter.view.uicontroller;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Parcel;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -12,21 +11,13 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
-import java.util.ArrayList;
-
 import unipg.pigdm.droidshooter.R;
-import unipg.pigdm.droidshooter.logic.Enemy;
 import unipg.pigdm.droidshooter.logic.GameState;
 import unipg.pigdm.droidshooter.sound.SoundPlayer;
 
 public class PauseScreenActivity extends AppCompatActivity {
-    private TextView score;
     private ImageButton audioButton;
-    private Button resumeButton;
-    private Button quitButton;
-    private Parcel gameStateParcel;
     private GameState gameState;
-    private ArrayList<Enemy> enemies;
     private SoundPlayer soundPlayer;
     SharedPreferences.Editor editor;
     private SharedPreferences prefs;
@@ -62,10 +53,10 @@ public class PauseScreenActivity extends AppCompatActivity {
 
         soundPlayer = new SoundPlayer(this);
         audioState = prefs.getBoolean("audio_state", true);
-        score = findViewById(R.id.scoreLabel);
+        TextView score = findViewById(R.id.scoreLabel);
         audioButton = findViewById(R.id.audioButton);
-        resumeButton = findViewById(R.id.resumeButton);
-        quitButton = findViewById(R.id.quitButton);
+        Button resumeButton = findViewById(R.id.resumeButton);
+        Button quitButton = findViewById(R.id.quitButton);
 
         setAudioStateButton();
 

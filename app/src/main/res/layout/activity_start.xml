@@ -15,6 +15,7 @@
         android:layout_height="99dp"
         android:layout_marginTop="20dp"
         android:text="@string/start_screen_slogan"
+        android:gravity="center"
         android:textSize="24sp" />
 
     <TextView

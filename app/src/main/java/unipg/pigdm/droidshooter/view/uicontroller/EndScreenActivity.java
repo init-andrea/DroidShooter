@@ -15,8 +15,7 @@ import unipg.pigdm.droidshooter.sound.SoundPlayer;
 
 public class EndScreenActivity extends AppCompatActivity {
 
-    private TextView endText, endScore;
-    private Button restartButton, menuButton, quitButton;
+    private TextView endText;
     private SoundPlayer soundPlayer;
     private boolean audioState;
 
@@ -58,11 +57,11 @@ public class EndScreenActivity extends AppCompatActivity {
 
         soundPlayer = new SoundPlayer(this);
 
-        endScore = findViewById(R.id.endGameScore);
+        TextView endScore = findViewById(R.id.endGameScore);
         endText = findViewById(R.id.endGameTextView);
-        restartButton = findViewById(R.id.restartButton);
-        menuButton = findViewById(R.id.menuButton);
-        quitButton = findViewById(R.id.endQuitButton);
+        Button restartButton = findViewById(R.id.restartButton);
+        Button menuButton = findViewById(R.id.menuButton);
+        Button quitButton = findViewById(R.id.endQuitButton);
         endScore.setText(String.valueOf(GameActivity.getScore()));
         setEndText(gameWon);
 
