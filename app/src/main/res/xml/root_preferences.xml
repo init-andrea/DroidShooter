@@ -3,10 +3,10 @@
 
     <PreferenceCategory android:title="@string/game_header">
 
-        <EditTextPreference
+        <!--<EditTextPreference
             android:key="crosshair_speed"
             android:title="@string/crosshair_speed_title"
-            app:useSimpleSummaryProvider="true" />
+            app:useSimpleSummaryProvider="true" />-->
 
         <EditTextPreference
             android:key="enemy_speed"

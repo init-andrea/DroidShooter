@@ -38,8 +38,8 @@ public class SettingsActivity extends AppCompatActivity {
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
 
-            EditTextPreference crosshairSpeed = findPreference("crosshair_speed");
-            SettingsActivity.setOnBindEditTextListener(crosshairSpeed);
+            //EditTextPreference crosshairSpeed = findPreference("crosshair_speed");
+            //SettingsActivity.setOnBindEditTextListener(crosshairSpeed);
             EditTextPreference enemySpeed = findPreference("enemy_speed");
             SettingsActivity.setOnBindEditTextListener(enemySpeed);
             EditTextPreference enemyNumber = findPreference("enemy_number");
@@ -49,7 +49,7 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
-    //prevents the user from inputting wrong values, only numbers are allowed for numeric settings
+    //Prevents the user from inputting wrong values, only numbers are allowed for numeric settings
     private static void setOnBindEditTextListener(EditTextPreference editTextPreference) {
         if (editTextPreference != null) {
             editTextPreference.setOnBindEditTextListener(
