@@ -124,6 +124,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         }
 
         scoreText = findViewById(R.id.scoreLabel);
+        scoreText.measure(0, 0);
         if (!showScore) {
             scoreText.setVisibility(View.INVISIBLE);
             scoreText.setHeight(0);
@@ -134,7 +135,7 @@ public class GameActivity extends AppCompatActivity implements SensorEventListen
         ImageButton pauseButton = findViewById(R.id.pauseButton);
 
         playerManager.setXMax(CustomGameView.getMaxWidth() - (float) pxFromDp(66));
-        playerManager.setYMax(CustomGameView.getMaxHeight() - (float) pxFromDp(66));
+        playerManager.setYMax(CustomGameView.getMaxHeight() - (float) pxFromDp(66) - (float) scoreText.getMeasuredHeight());
 
         pauseButton.setOnClickListener(pauseGameListener);
 

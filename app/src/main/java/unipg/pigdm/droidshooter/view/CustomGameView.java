@@ -196,4 +196,15 @@ public class CustomGameView extends View {
         gameResumed = false;
     }
 
+    @Override
+    protected void onSizeChanged(int xNew, int yNew, int xOld, int yOld) {
+        super.onSizeChanged(xNew, yNew, xOld, yOld);
+
+        width = xNew;
+        height = yNew;
+        enemyManager.setXMax(width);
+        enemyManager.setYMax(height);
+
+    }
+
 }

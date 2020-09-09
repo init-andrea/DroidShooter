@@ -10,17 +10,6 @@ public class Enemy implements Parcelable {
     private float yPosition;
     private float xPosition;
     private int enemySizeDp = 44;
-    public static final Creator<Enemy> CREATOR = new Creator<Enemy>() {
-        @Override
-        public Enemy createFromParcel(Parcel in) {
-            return new Enemy(in);
-        }
-
-        @Override
-        public Enemy[] newArray(int size) {
-            return new Enemy[size];
-        }
-    };
 
     //[screen side (0 top, 1 right, 2 bottom, 3 left), px on the side]
     private int[] movementInfo = new int[2];
@@ -45,6 +34,18 @@ public class Enemy implements Parcelable {
         dead = in.readByte() != 0;
         moving = in.readByte() != 0;
     }
+
+    public static final Creator<Enemy> CREATOR = new Creator<Enemy>() {
+        @Override
+        public Enemy createFromParcel(Parcel in) {
+            return new Enemy(in);
+        }
+
+        @Override
+        public Enemy[] newArray(int size) {
+            return new Enemy[size];
+        }
+    };
 
     public String getName() {
         return name;

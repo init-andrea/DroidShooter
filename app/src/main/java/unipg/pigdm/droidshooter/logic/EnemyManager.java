@@ -137,6 +137,14 @@ public class EnemyManager {
         enemy.setYPosition(generator.nextInt((int) yMax));
     }
 
+    public void setXMax(float xMax) {
+        this.xMax = xMax - pxFromDp(44);
+    }
+
+    public void setYMax(float yMax) {
+        this.yMax = yMax - pxFromDp(44);
+    }
+
     public boolean isHit(Enemy e, float x, float y, int CROSSHAIR_SIZE_DP) {
         if ((e.getXPosition() + pxFromDp(e.getSize())) < (x + pxFromDp(CROSSHAIR_SIZE_DP))
                 && (e.getXPosition()) > (x)
